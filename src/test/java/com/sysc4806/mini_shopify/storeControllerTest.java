@@ -2,10 +2,12 @@ package com.sysc4806.mini_shopify;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
@@ -13,17 +15,18 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(StoreController.class)
+@ExtendWith(MockitoExtension.class)
 class StoreControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Mock
     private storeRepository storeRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @InjectMocks
+    private StoreController storeController;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void testCreateStore() throws Exception {
@@ -32,13 +35,11 @@ class StoreControllerTest {
 
         when(storeRepository.save(any(Store.class))).thenReturn(store);
 
-        mockMvc.perform(post("/")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(store)))
-                .andExpect(status().isOk())
+        mockMvc = MockMvcBuilders.standaloneSetup(storeController).build();
+
+        mockMvc.perform(post("/").contentType("application/json").content(objectMapper.writeValueAsString(store))).andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("TechStore"))
                 .andExpect(jsonPath("$.owner").value("Alice"));
-
         verify(storeRepository, times(1)).save(any(Store.class));
     }
 
@@ -47,10 +48,12 @@ class StoreControllerTest {
         Store store = new Store("TechStore", "Alice", null);
         store.setId(1L);
         when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
+        mockMvc = MockMvcBuilders.standaloneSetup(storeController).build();
         mockMvc.perform(get("/store/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("TechStore"))
                 .andExpect(jsonPath("$.owner").value("Alice"));
+
         verify(storeRepository, times(1)).findById(1L);
     }
 }
