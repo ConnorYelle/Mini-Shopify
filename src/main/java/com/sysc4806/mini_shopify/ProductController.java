@@ -13,10 +13,10 @@ public class ProductController {
     @Autowired
     private productRepository productRepository;
 
-    @GetMapping("/")
+    @GetMapping("/products")
     public String index(Model model) {
         model.addAttribute("products", productRepository.findAll());
-        return "index";
+        return "products";
     }
 
     @PostMapping

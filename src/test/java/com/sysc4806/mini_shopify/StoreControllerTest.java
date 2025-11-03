@@ -21,7 +21,7 @@ class StoreControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private storeRepository storeRepository;
+    private StoreRepository storeRepository;
 
     @InjectMocks
     private StoreController storeController;
