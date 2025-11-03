@@ -10,6 +10,7 @@ or if it falls under certain tags/categories
 @Entity
 public class Store {
     @Id
+    @GeneratedValue
     private Long id;
     private String name;
     private String owner;
