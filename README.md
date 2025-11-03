@@ -24,10 +24,10 @@ To run the project locally:
 # Clone the repository
 git clone https://github.com/ConnorYelle/Mini-Shopify.git
 
-# Package the application
+### Package the application
 mvn package
 
-# Execute the jar file
+### Execute the jar file
 cd target
 java -jar Mini-Shopify-1.0-SNAPSHOT.jar
 
