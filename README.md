@@ -21,7 +21,7 @@ Access the deployed application here:
 
 ### Local
 To run the project locally:
-# Clone the repository
+### Clone the repository
 git clone https://github.com/ConnorYelle/Mini-Shopify.git
 
 ### Package the application
