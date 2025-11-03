@@ -32,9 +32,9 @@ cd target
 java -jar Mini-Shopify-1.0-SNAPSHOT.jar
 
 ## Sprints
-Early prototype - November 3rd, 2025
-Alpha Release - November 17, 2025
-Final demo - December 1, 2025
+- Early prototype - November 3rd, 2025
+- Alpha Release - November 17, 2025
+- Final demo - December 1, 2025
 
 ## Contributors
 @tphang46
