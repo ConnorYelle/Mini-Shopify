@@ -37,7 +37,9 @@ java -jar Mini-Shopify-1.0-SNAPSHOT.jar
 - Final demo - December 1, 2025
 
 ## Contributors
-<a href="https://github.com/ConnorYelle/Mini-Shopify/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ConnorYelle/Mini-Shopify" />
-</a>
+Tommy Phang - 101211316
+Owen McKibbon - 101269794
+Connor Yelle - 101260641
+Jonas Andaya - 101224271
+Umniyah Mohammed - 101158792
 
