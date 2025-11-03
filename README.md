@@ -31,6 +31,11 @@ mvn package
 cd target
 java -jar Mini-Shopify-1.0-SNAPSHOT.jar
 
+## Database Schema
+### Store
+<img width="223" height="193" alt="Screenshot 2025-11-03 at 12 44 56 PM" src="https://github.com/user-attachments/assets/498aeea2-0af2-4116-b302-c463dea0a338" />
+
+
 ## Sprints
 - Early prototype - November 3rd, 2025
 - Alpha Release - November 17, 2025
