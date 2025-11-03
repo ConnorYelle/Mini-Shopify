@@ -23,11 +23,15 @@ class StoreTest {
     void testConstructorAndGetters() {
         assertEquals("TechStore", store.getName());
         assertEquals("Alice", store.getOwner());
-        assertEquals(2, store.getTags().size());
-        assertTrue(store.getTags().contains("electronics"));
-        assertTrue(store.getTags().contains("gadgets"));
+        List<String> tags = store.getTags();
+        assertEquals(2, tags.size());
+        assertTrue(tags.contains("electronics"));
+        assertTrue(tags.contains("gadgets"));
         assertNull(store.getDescription());
-        assertNull(store.getProducts());
+        assertNull(store.getCategory());
+        List<Product> products = store.getProducts();
+        assertNotNull(products);
+        assertTrue(products.isEmpty());
     }
 
     @Test
@@ -35,10 +39,12 @@ class StoreTest {
         store.setName("NewTechStore");
         store.setOwner("Bob");
         store.setDescription("Best store for electronics");
+        store.setCategory("Electronics");
 
         assertEquals("NewTechStore", store.getName());
         assertEquals("Bob", store.getOwner());
         assertEquals("Best store for electronics", store.getDescription());
+        assertEquals("Electronics", store.getCategory());
 
         List<String> newTags = new ArrayList<>(Arrays.asList("home", "appliances"));
         store.setTags(newTags);
