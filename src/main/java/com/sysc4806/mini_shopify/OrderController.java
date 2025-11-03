@@ -4,14 +4,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
+@RestController
+@RequestMapping("/orders")
 public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
 
-    @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("orders", orderRepository.findAll());
-        return "index";
+    @GetMapping
+    public Iterable<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
     @PostMapping
@@ -19,7 +20,7 @@ public class OrderController {
         return orderRepository.save(order);
     }
 
-    @GetMapping("/order/{id}")
+    @GetMapping("/{id}")
     public Optional<Order> getOrder(@PathVariable Long id) {
         return orderRepository.findById(id);
     }
