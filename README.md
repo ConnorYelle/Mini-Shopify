@@ -37,4 +37,6 @@ java -jar Mini-Shopify-1.0-SNAPSHOT.jar
 - Final demo - December 1, 2025
 
 ## Contributors
-@tphang46
+<a href="https://github.com/OWNER/REPO/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=OWNER/REPO" />
+</a>
