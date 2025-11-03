@@ -24,7 +24,7 @@ public class ProductController {
         return productRepository.save(product);
     }
 
-    @GetMapping("/product/id")
+    @GetMapping("/product/{id}")
     public Optional<Product> findById(@PathVariable Long id) {
         return productRepository.findById(id);
     }
