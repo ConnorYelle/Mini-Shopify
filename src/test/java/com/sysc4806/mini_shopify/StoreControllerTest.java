@@ -21,7 +21,7 @@ class StoreControllerTest {
     private StoreRepository storeRepository;
 
     @InjectMocks
-    private StoreController storeController;
+    private homePageController storeController;
 
     private Model model;
 

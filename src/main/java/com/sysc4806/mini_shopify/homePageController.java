@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class StoreController {
+public class homePageController {
 
     @Autowired
     private StoreRepository storeRepository;
@@ -42,4 +42,6 @@ public class StoreController {
                 })
                 .orElse("error");
     }
+
+
 }
