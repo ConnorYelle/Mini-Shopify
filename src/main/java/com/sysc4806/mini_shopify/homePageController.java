@@ -1,47 +1,66 @@
 package com.sysc4806.mini_shopify;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/")
 public class homePageController {
 
     @Autowired
     private StoreRepository storeRepository;
 
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("title", "Mini-Shopify");
-        model.addAttribute("stores", storeRepository.findAll());
-        return "index";
+    public String index() {
+        return "storeHomePage";
     }
 
+    //return JSON make sure ur stuff returns JSON
     @GetMapping("/stores")
-    public String viewStores(Model model) {
-        model.addAttribute("stores", storeRepository.findAll());
-        model.addAttribute("store", new Store());
-        return "stores";
+    @ResponseBody
+    public Iterable<Store> getAllStores() {
+        return storeRepository.findAll();
     }
 
+    //create a new store and returns JSON
     @PostMapping("/stores")
-    public String createStore(@ModelAttribute Store store, Model model) {
-        storeRepository.save(store);
-        model.addAttribute("message", "Store created.");
-        model.addAttribute("stores", storeRepository.findAll());
-        model.addAttribute("store", new Store());
-        return "stores";
+    @ResponseBody
+    public ResponseEntity<Store> createStore(@RequestBody Store store) {
+        Store saved = storeRepository.save(store);
+        return ResponseEntity.ok(saved);
     }
 
-    @GetMapping("/store/{id}")
-    public String getStore(@PathVariable Long id, Model model) {
+    // get a single store by ID and returns JSON
+    @GetMapping("/stores/{id}")
+    @ResponseBody
+    public ResponseEntity<Store> getStore(@PathVariable Long id) {
+        return storeRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    // update a store and returns JSON
+    @PutMapping("/stores/{id}")
+    @ResponseBody
+    public ResponseEntity<Store> updateStore(@PathVariable Long id, @RequestBody Store updatedStore) {
         return storeRepository.findById(id)
                 .map(store -> {
-                    model.addAttribute("store", store);
-                    return "store-details";
-                })
-                .orElse("error");
+                    store.setName(updatedStore.getName() != null ? updatedStore.getName() : store.getName());
+                    store.setDescription(updatedStore.getDescription());
+                    store.setCategory(updatedStore.getCategory() != null ? updatedStore.getCategory() : store.getCategory());
+                    Store saved = storeRepository.save(store);
+                    return ResponseEntity.ok(saved);
+                }).orElse(ResponseEntity.notFound().build());
     }
 
-
+    // deletes a store
+    @DeleteMapping("/stores/{id}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteStore(@PathVariable Long id) {
+        if (storeRepository.existsById(id)) {
+            storeRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

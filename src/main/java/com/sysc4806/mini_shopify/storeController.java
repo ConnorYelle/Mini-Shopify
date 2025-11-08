@@ -1,12 +1,12 @@
 package com.sysc4806.mini_shopify;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/store")
 public class storeController {
 
     @Autowired
@@ -17,10 +17,15 @@ public class storeController {
         return storeRepository.save(store);
     }
 
-    @GetMapping("/store/{id}")
-    public Optional<Store> getStore(@PathVariable Long id) {
-        return storeRepository.findById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Store> getStore(@PathVariable Long id) {
+        Optional<Store> store = storeRepository.findById(id);
+        return store.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
+    @GetMapping("/{id}/owner")
+    public ResponseEntity<Store> getOwnerPage(@PathVariable Long id) {
+        Optional<Store> store = storeRepository.findById(id);
+        return store.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
