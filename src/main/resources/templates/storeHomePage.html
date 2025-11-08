@@ -99,7 +99,7 @@
             console.error("Error fetching stores:", err);
         }
     }
-
+// Not truly SPA should change some logic below here to make it SPA, up to yall
     document.getElementById('create-store-form').addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -120,7 +120,7 @@
             if (response.ok) {
                 document.getElementById('message').textContent = 'Store created successfully!';
                 document.getElementById('create-store-form').reset();
-                fetchStores(); // refresh list
+                fetchStores();
             } else {
                 document.getElementById('message').textContent = 'Failed to create store.';
             }
