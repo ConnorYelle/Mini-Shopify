@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <<meta charset="UTF-8">
+    <title>Mini-Shopify</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #121212;
+            color: #FFFFFF;
+        }
+        h1, h2 {
+            color: #1DB954;
+            margin-bottom: 20px;
+        }
+        form input, form button {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        form input {
+            background-color: #282828;
+            color: #FFFFFF;
+        }
+        form input::placeholder {
+            color: #b3b3b3;
+        }
+
+        button {
+            background-color: #1DB954;
+            color: #FFFFFF;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+        }
+        #store-list {
+            list-style: none;
+            padding: 0;
+        }
+        #store-list li {
+            background-color: #282828;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #message {
+            margin-top: 10px;
+            color: #1DB954;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+
+<h1>Mini-Shopify</h1>
+
+<section id="create-store">
+    <h2>Create A New Store</h2>
+    <form id="create-store-form">
+        <input type="text" id="name" placeholder="Store Name" required>
+        <input type="text" id="owner" placeholder="Owner" required>
+        <input type="text" id="category" placeholder="Category" required>
+        <input type="text" id="description" placeholder="Description">
+        <button type="submit">Create Shop</button>
+    </form>
+    <p id="message"></p>
+</section>
+
+<section id="list-stores">
+    <h2>Our Vendors</h2>
+    <ul id="store-list"></ul>
+</section>
+
+<script>
+    const api = "/stores";
+    async function fetchStores() {
+        try {
+            const response = await fetch(api);
+            const stores = await response.json();
+            const list = document.getElementById("store-list");
+            list.innerHTML = "";
+            stores.forEach(store => {
+                const li = document.createElement("li");
+                li.textContent = `${store.name} - Owner: ${store.owner} - Category: ${store.category}`;
+                list.appendChild(li);
+            });
+        } catch (err) {
+            console.error("Error fetching stores:", err);
+        }
+    }
+// Not truly SPA should change some logic below here to make it SPA, up to yall
+    document.getElementById('create-store-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const store = {
+            name: document.getElementById('name').value,
+            owner: document.getElementById('owner').value,
+            category: document.getElementById('category').value,
+            description: document.getElementById('description').value
+        };
+
+        try {
+            const response = await fetch(api, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(store)
+            });
+
+            if (response.ok) {
+                document.getElementById('message').textContent = 'Store created successfully!';
+                document.getElementById('create-store-form').reset();
+                fetchStores();
+            } else {
+                document.getElementById('message').textContent = 'Failed to create store.';
+            }
+        } catch (err) {
+            console.error(err);
+            document.getElementById('message').textContent = 'Error connecting to server.';
+        }
+    });
+    fetchStores();
+</script>
+
+</body>
+</html>
