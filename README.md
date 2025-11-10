@@ -15,10 +15,6 @@ The **Online Shop Management System** is a web application where merchants can c
 https://team28-gsdzgjcha5f5aufu.canadacentral-01.azurewebsites.net/
 
 ## Usage
-### Production
-Access the deployed application here:  
-[[https://minishopify.azurewebsites.net](https://minishopify.azurewebsites.net)](https://team28-gsdzgjcha5f5aufu.canadacentral-01.azurewebsites.net/)
-
 ### Local
 To run the project locally:
 ### Clone the repository
