@@ -168,7 +168,8 @@
 <script>
     // grab the store ID from the URL
     const pathParts = window.location.pathname.split("/");
-    const storeId = pathParts[2]; // "1"
+    //"1" from http://localhost:8080/store/1/owner for example
+    const storeId = pathParts[2];
     fetch(`/store/${storeId}`)
         .then(response => {
             if (!response.ok) throw new Error('Store not found');
