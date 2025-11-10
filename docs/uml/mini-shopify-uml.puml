@@ -27,18 +27,18 @@ class Store {
 
 class Product {
     - Long id
-    - String name
-    - String description
-    - Double price
-    - int quantity
     - Store store
+    - String description
+    - String image
+    - int inventoryNumber
     --
     + getId(): Long
-    + getName(): String
-    + getDescription(): String
-    + getPrice(): Double
-    + getQuantity(): int
     + getStore(): Store
+    + getDescription(): String
+    + getImage(): String
+    + getInventoryNumber(): int
+    + increaseInventoryNumber()
+    + decreaseInventoryNumber()
 }
 
 class Customer {
@@ -71,23 +71,29 @@ class Order {
 
 Store "1" --> "many" Product : owns
 Product "many" --> "1" Store : belongs to
-Customer "1" --> "many" Order : places
-Order "1" --> "1" Customer : placed by
 
-class StoreRepository <<interface>>
-class ProductRepository <<interface>>
-class CustomerRepository <<interface>>
-class OrderRepository <<interface>>
+interface StoreRepository
+interface productRepository
+interface CustomerRepository
+interface OrderRepository
 
 StoreRepository --> Store
-ProductRepository --> Product
+productRepository --> Product
 CustomerRepository --> Customer
 OrderRepository --> Order
 
-class StoreController {
-    + viewStores(Model)
-    + createStore(Store, Model)
-    + getStore(Long, Model)
+class storeController {
+    + createStore(Store)
+    + getStore(Long)
+    + getOwnerDashboard(Long, Model)
+    + deleteStore(Long)
+}
+class homePageController {
+    + index()
+    + getAllStores(): Iterable<Store>
+    + createStore(Store)
+    + getStore(Long)
+    + updateStore(Long, Store)
 }
 class ProductController {
     + index(Model)
@@ -105,8 +111,9 @@ class OrderController {
     + getOrder(Long)
 }
 
-StoreController --> StoreRepository
-ProductController --> ProductRepository
+storeController --> StoreRepository
+homePageController --> StoreRepository
+ProductController --> productRepository
 CustomerController --> CustomerRepository
 OrderController --> OrderRepository
 
@@ -114,7 +121,8 @@ class MiniShopifyApplication {
     + main(String[])
 }
 
-MiniShopifyApplication --> StoreController
+MiniShopifyApplication --> storeController
+MiniShopifyApplication --> homePageController
 MiniShopifyApplication --> ProductController
 MiniShopifyApplication --> CustomerController
 MiniShopifyApplication --> OrderController
