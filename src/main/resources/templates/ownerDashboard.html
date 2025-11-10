@@ -181,9 +181,31 @@
 </script>
 
 <script>
-    document.getElementById("delete-store-btn").addEventListener("click",function (){
-        
-    })
+    document.getElementById('delete-store-btn').addEventListener('click', function() {
+        const storeId = document.getElementById('storeId').value;
+
+        if (!confirm("Are you sure you want to delete this store? This action cannot be undone.")) {
+            return;
+        }
+        fetch(`/store/${storeId}`, {
+            method: 'DELETE'
+        }).then(response => {
+                const msg = document.getElementById('delete-message');
+                if (response.status === 204) {
+                    msg.textContent = "Store deleted!";
+                    document.getElementById('store-form').reset();
+                    document.getElementById('store-form').querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
+                    this.disabled = true;
+                } else if (response.status === 404) {
+                    msg.textContent = "Store not found.";
+                } else {
+                    msg.textContent = "Error deleting store.";
+                }
+            }).catch(error => {
+                document.getElementById('delete-message').textContent = "Network error.";
+                console.error(error);
+            });
+    });
 </script>
 </body>
 </html>
