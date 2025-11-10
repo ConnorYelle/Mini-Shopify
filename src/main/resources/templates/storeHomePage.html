@@ -52,6 +52,10 @@
             margin-bottom: 10px;
             padding: 10px;
             border-radius: 5px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         #message {
             margin-top: 10px;
@@ -93,6 +97,13 @@
             stores.forEach(store => {
                 const li = document.createElement("li");
                 li.textContent = `${store.name} - Owner: ${store.owner} - Category: ${store.category}`;
+                const ownerBtn = document.createElement("button");
+                ownerBtn.textContent = "Owner Dashboard";
+                ownerBtn.style.marginLeft = "10px";
+                ownerBtn.onclick = () => {
+                    window.location.href = `/store/${store.id}/owner`;
+                };
+                li.appendChild(ownerBtn);
                 list.appendChild(li);
             });
         } catch (err) {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Store Dashboard</title>
@@ -28,6 +28,7 @@
             font-size: 28px;
             color: #FFFFFF;
         }
+
         #delete-store-btn {
             background-color: #ff4c4c;
             color: white;
@@ -51,7 +52,6 @@
             text-align: center;
         }
 
-        /* quadrants */
         .quadrant {
             border: 1px solid #121212;
             padding: 20px;
@@ -124,27 +124,29 @@
 </head>
 <body>
 <header>
-    <h1>Welcome to your store dashboard</h1>
+    <h1 id="welcome-msg">Welcome to your store dashboard</h1>
 </header>
 
 <!-- left quadrant -->
 <div class="quadrant top-left">
     <h2>Store Information</h2>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <input type="text" id="storeName" style="flex: 1;">
+    </div>
+
     <form id="store-form">
         <label for="storeId">Store ID</label>
-        <input type="text" id="storeId" value="12345" readonly>
-
-        <label for="storeName">Name</label>
-        <input type="text" id="storeName" value="Tech Haven">
+        <input type="text" id="storeId" readonly>
 
         <label for="storeOwner">Owner</label>
-        <input type="text" id="storeOwner" value="Alex Johnson">
+        <input type="text" id="storeOwner">
 
         <label for="storeCategory">Category</label>
-        <input type="text" id="storeCategory" value="Electronics">
+        <input type="text" id="storeCategory">
 
         <label for="storeDescription">Description</label>
-        <textarea id="storeDescription" rows="3">Your one-stop shop for cutting-edge gadgets.</textarea>
+        <textarea id="storeDescription" rows="3"></textarea>
 
         <button type="button" onclick="saveChanges()">Save Changes</button>
     </form>
@@ -161,10 +163,32 @@
 </div>
 
 <!-- bottom right quadrant -->
-<div class="quadrant bottom-right">
-</div>
+<div class="quadrant bottom-right"></div>
 
 <script>
+    // grab the store ID from the URL
+    const pathParts = window.location.pathname.split("/");
+    const storeId = pathParts[2]; // "1"
+    fetch(`/store/${storeId}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Store not found');
+            return response.json();
+        })
+        .then(currentStore => {
+            // populate the form dynamically, meaning each dashboard is basically unique
+            document.getElementById('storeId').value = currentStore.id;
+            document.getElementById('storeName').value = currentStore.name;
+            document.getElementById('storeOwner').value = currentStore.owner;
+            document.getElementById('storeCategory').value = currentStore.category;
+            document.getElementById('storeDescription').value = currentStore.description;
+            document.getElementById('welcome-msg').textContent = `Welcome to your store dashboard - Store ID: ${currentStore.id}`;
+        })
+        .catch(error => {
+            console.error(error);
+            document.getElementById('welcome-msg').textContent = "Store not found.";
+            document.getElementById('store-form').style.display = "none";
+        });
+
     function saveChanges() {
         const storeData = {
             id: document.getElementById('storeId').value,
@@ -173,14 +197,27 @@
             category: document.getElementById('storeCategory').value,
             description: document.getElementById('storeDescription').value
         };
-        console.log("Updated Store:", storeData);
-        const msg = document.getElementById('message');
-        msg.textContent = "Store details updated successfully!";
-        setTimeout(() => msg.textContent = "", 3000);
+        // send updated store data to backend
+        fetch(`/store/${storeData.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(storeData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('message').textContent = "Store details updated successfully!";
+                } else {
+                    document.getElementById('message').textContent = "Error updating store.";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById('message').textContent = "Network error.";
+            });
     }
-</script>
 
-<script>
     document.getElementById('delete-store-btn').addEventListener('click', function() {
         const storeId = document.getElementById('storeId').value;
 
@@ -190,21 +227,21 @@
         fetch(`/store/${storeId}`, {
             method: 'DELETE'
         }).then(response => {
-                const msg = document.getElementById('delete-message');
-                if (response.status === 204) {
-                    msg.textContent = "Store deleted!";
-                    document.getElementById('store-form').reset();
-                    document.getElementById('store-form').querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
-                    this.disabled = true;
-                } else if (response.status === 404) {
-                    msg.textContent = "Store not found.";
-                } else {
-                    msg.textContent = "Error deleting store.";
-                }
-            }).catch(error => {
-                document.getElementById('delete-message').textContent = "Network error.";
-                console.error(error);
-            });
+            const msg = document.getElementById('delete-message');
+            if (response.status === 204) {
+                msg.textContent = "Store deleted!";
+                document.getElementById('store-form').reset();
+                document.getElementById('store-form').querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
+                this.disabled = true;
+            } else if (response.status === 404) {
+                msg.textContent = "Store not found.";
+            } else {
+                msg.textContent = "Error deleting store.";
+            }
+        }).catch(error => {
+            document.getElementById('delete-message').textContent = "Network error.";
+            console.error(error);
+        });
     });
 </script>
 </body>
