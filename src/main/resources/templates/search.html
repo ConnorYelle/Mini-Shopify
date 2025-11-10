@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Searching Stores</title>
+	<style>
+
+	</style>
+</head>
+<body>
+	<form id="searchForm" action="/stores/search" method="get">
+        <label>
+            <input type="text" id="searchInput" name="query" placeholder="Search for stores...">
+        </label>
+        <button id="submitButton" type="submit">Search</button>
+    </form>
+
+    <script>
+        const form = document.getElementById("searchForm")
+        const input = document.getElementById("searchInput")
+        const submitButton = document.getElementById("submitButton")
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const query = input.value.trim();
+            if (query === "") {
+                fetchStores("/stores");}
+            else {
+                fetchStores(`/stores/search?query=${encodeURIComponent(query)}`);
+            }
+        });
+    </script>
+</body>
+</html>

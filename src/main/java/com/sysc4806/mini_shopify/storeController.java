@@ -1,16 +1,22 @@
 package com.sysc4806.mini_shopify;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/store")
-public class storeController {
+public class StoreController {
 
     @Autowired
     private StoreRepository storeRepository;
@@ -29,6 +35,8 @@ public class storeController {
         Optional<Store> store = storeRepository.findById(id);
         return store.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    
 
     // get the owner dashboard page for a store
     @GetMapping("/{id}/owner")
