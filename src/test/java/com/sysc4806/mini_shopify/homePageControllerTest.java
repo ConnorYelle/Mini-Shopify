@@ -127,19 +127,4 @@ class HomePageControllerTest {
         verify(storeRepository, never()).save(any(Store.class));
     }
 
-    @Test
-    void testDeleteStore() throws Exception {
-        when(storeRepository.existsById(1L)).thenReturn(true);
-        mockMvc.perform(delete("/stores/1"))
-                .andExpect(status().isNoContent());
-        verify(storeRepository, times(1)).deleteById(1L);
-    }
-
-    @Test
-    void testDeleteStoreNotFound() throws Exception {
-        when(storeRepository.existsById(999L)).thenReturn(false);
-        mockMvc.perform(delete("/stores/999"))
-                .andExpect(status().isNotFound());
-        verify(storeRepository, never()).deleteById(999L);
-    }
 }

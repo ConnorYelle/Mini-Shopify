@@ -1,4 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Store Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
 
+        header {
+            width: 100%;
+            background-color: #1DB954;
+            padding: 20px;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #FFFFFF;
+        }
+
+        #delete-store-btn {
+            background-color: #ff4c4c;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #delete-store-btn:hover {
+            background-color: #ff1a1a;
+            transform: scale(1.05);
+        }
+
+        #delete-message {
+            margin-top: 10px;
+            color: #ff4c4c;
+            text-align: center;
+        }
+
+        .quadrant {
+            border: 1px solid #121212;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .top-left h1 {
+            color: #1DB954;
+            margin: 10px;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: #1DB954;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin: 8px 0 4px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            background-color: #282828;
+            color: #FFFFFF;
+            font-size: 15px;
+        }
+
+        input[readonly] {
+            background-color: #333333;
+            color: #aaaaaa;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background-color: #1DB954;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+        }
+
+        #message {
+            margin-top: 10px;
+            color: #1DB954;
+        }
+
+        .bottom-left, .bottom-right {
+            background-color: #121212;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1 id="welcome-msg">Welcome to your store dashboard</h1>
+</header>
+
+<!-- left quadrant -->
+<div class="quadrant top-left">
+    <h2>Store Information</h2>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <input type="text" id="storeName" style="flex: 1;">
+    </div>
+
+    <form id="store-form">
+        <label for="storeId">Store ID</label>
+        <input type="text" id="storeId" readonly>
+
+        <label for="storeOwner">Owner</label>
+        <input type="text" id="storeOwner">
+
+        <label for="storeCategory">Category</label>
+        <input type="text" id="storeCategory">
+
+        <label for="storeDescription">Description</label>
+        <textarea id="storeDescription" rows="3"></textarea>
+
+        <button type="button" onclick="saveChanges()">Save Changes</button>
+    </form>
+    <div id="message"></div>
+</div>
+
+<!-- top right quadrant -->
+<div class="quadrant top-right"></div>
+
+<!-- bottom left quadrant -->
+<div class="quadrant bottom-left">
+    <button id="delete-store-btn">Delete Store</button>
+    <div id="delete-message"></div>
+</div>
+
+<!-- bottom right quadrant -->
+<div class="quadrant bottom-right"></div>
+
+<script>
+    // grab the store ID from the URL
+    const pathParts = window.location.pathname.split("/");
+    //"1" from http://localhost:8080/store/1/owner for example
+    const storeId = pathParts[2];
+    fetch(`/store/${storeId}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Store not found');
+            return response.json();
+        })
+        .then(currentStore => {
+            // populate the form dynamically, meaning each dashboard is basically unique
+            document.getElementById('storeId').value = currentStore.id;
+            document.getElementById('storeName').value = currentStore.name;
+            document.getElementById('storeOwner').value = currentStore.owner;
+            document.getElementById('storeCategory').value = currentStore.category;
+            document.getElementById('storeDescription').value = currentStore.description;
+            document.getElementById('welcome-msg').textContent = `Welcome to your store dashboard - Store ID: ${currentStore.id}`;
+        })
+        .catch(error => {
+            console.error(error);
+            document.getElementById('welcome-msg').textContent = "Store not found.";
+            document.getElementById('store-form').style.display = "none";
+        });
+
+    function saveChanges() {
+        const storeData = {
+            id: document.getElementById('storeId').value,
+            name: document.getElementById('storeName').value,
+            owner: document.getElementById('storeOwner').value,
+            category: document.getElementById('storeCategory').value,
+            description: document.getElementById('storeDescription').value
+        };
+        // send updated store data to backend
+        fetch(`/store/${storeData.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(storeData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('message').textContent = "Store details updated successfully!";
+                } else {
+                    document.getElementById('message').textContent = "Error updating store.";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById('message').textContent = "Network error.";
+            });
+    }
+
+    document.getElementById('delete-store-btn').addEventListener('click', function() {
+        const storeId = document.getElementById('storeId').value;
+
+        if (!confirm("Are you sure you want to delete this store? This action cannot be undone.")) {
+            return;
+        }
+        fetch(`/store/${storeId}`, {
+            method: 'DELETE'
+        }).then(response => {
+            const msg = document.getElementById('delete-message');
+            if (response.status === 204) {
+                msg.textContent = "Store deleted!";
+                document.getElementById('store-form').reset();
+                document.getElementById('store-form').querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
+                this.disabled = true;
+            } else if (response.status === 404) {
+                msg.textContent = "Store not found.";
+            } else {
+                msg.textContent = "Error deleting store.";
+            }
+        }).catch(error => {
+            document.getElementById('delete-message').textContent = "Network error.";
+            console.error(error);
+        });
+    });
+</script>
+</body>
 </html>
