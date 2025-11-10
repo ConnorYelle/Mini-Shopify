@@ -1,4 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Store Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
 
+        header {
+            width: 100%;
+            background-color: #1DB954;
+            padding: 20px;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #FFFFFF;
+        }
+        #delete-store-btn {
+            background-color: #ff4c4c;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #delete-store-btn:hover {
+            background-color: #ff1a1a;
+            transform: scale(1.05);
+        }
+
+        #delete-message {
+            margin-top: 10px;
+            color: #ff4c4c;
+            text-align: center;
+        }
+
+        /* quadrants */
+        .quadrant {
+            border: 1px solid #121212;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .top-left h1 {
+            color: #1DB954;
+            margin: 10px;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: #1DB954;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin: 8px 0 4px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            background-color: #282828;
+            color: #FFFFFF;
+            font-size: 15px;
+        }
+
+        input[readonly] {
+            background-color: #333333;
+            color: #aaaaaa;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background-color: #1DB954;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+        }
+
+        #message {
+            margin-top: 10px;
+            color: #1DB954;
+        }
+
+        .bottom-left, .bottom-right {
+            background-color: #121212;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to your store dashboard</h1>
+</header>
+
+<!-- left quadrant -->
+<div class="quadrant top-left">
+    <h2>Store Information</h2>
+    <form id="store-form">
+        <label for="storeId">Store ID</label>
+        <input type="text" id="storeId" value="12345" readonly>
+
+        <label for="storeName">Name</label>
+        <input type="text" id="storeName" value="Tech Haven">
+
+        <label for="storeOwner">Owner</label>
+        <input type="text" id="storeOwner" value="Alex Johnson">
+
+        <label for="storeCategory">Category</label>
+        <input type="text" id="storeCategory" value="Electronics">
+
+        <label for="storeDescription">Description</label>
+        <textarea id="storeDescription" rows="3">Your one-stop shop for cutting-edge gadgets.</textarea>
+
+        <button type="button" onclick="saveChanges()">Save Changes</button>
+    </form>
+    <div id="message"></div>
+</div>
+
+<!-- top right quadrant -->
+<div class="quadrant top-right"></div>
+
+<!-- bottom left quadrant -->
+<div class="quadrant bottom-left">
+    <button id="delete-store-btn">Delete Store</button>
+    <div id="delete-message"></div>
+</div>
+
+<!-- bottom right quadrant -->
+<div class="quadrant bottom-right">
+</div>
+
+<script>
+    function saveChanges() {
+        const storeData = {
+            id: document.getElementById('storeId').value,
+            name: document.getElementById('storeName').value,
+            owner: document.getElementById('storeOwner').value,
+            category: document.getElementById('storeCategory').value,
+            description: document.getElementById('storeDescription').value
+        };
+        console.log("Updated Store:", storeData);
+        const msg = document.getElementById('message');
+        msg.textContent = "Store details updated successfully!";
+        setTimeout(() => msg.textContent = "", 3000);
+    }
+</script>
+
+<script>
+    document.getElementById("delete-store-btn").addEventListener("click",function (){
+        
+    })
+</script>
+</body>
 </html>

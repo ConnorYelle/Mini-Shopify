@@ -52,15 +52,4 @@ public class homePageController {
                     return ResponseEntity.ok(saved);
                 }).orElse(ResponseEntity.notFound().build());
     }
-
-    // deletes a store
-    @DeleteMapping("/stores/{id}")
-    @ResponseBody
-    public ResponseEntity<Void> deleteStore(@PathVariable Long id) {
-        if (storeRepository.existsById(id)) {
-            storeRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
 }

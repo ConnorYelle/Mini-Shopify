@@ -28,4 +28,15 @@ public class storeController {
         Optional<Store> store = storeRepository.findById(id);
         return store.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    // deletes a store
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<Void> deleteStore(@PathVariable Long id) {
+        if (storeRepository.existsById(id)) {
+            storeRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
