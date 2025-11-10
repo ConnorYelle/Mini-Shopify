@@ -70,7 +70,6 @@ public class HomePageController {
     }
 
     @GetMapping("/stores/search")
-    @ResponseBody
     public String showSearchPage(){
         return "search";
     }
