@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Searching Stores</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #121212;
+            color: #FFFFFF;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 80px;
+        }
+
+        #searchForm {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #282828;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            gap: 10px;
+        }
+
+        #searchInput {
+            width: 220px;
+            height: 32px;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #666666;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        #searchInput::placeholder {
+            color: #ccc;
+        }
+
+        #submitButton {
+            background-color: #1DB954;
+            border: none;
+            border-radius: 6px;
+            color: #ffffff;
+            cursor: pointer;
+            height: 34px;
+            font-weight: bold;
+            padding: 0 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        #submitButton:hover {
+            background-color: #17a84a;
+        }
+
+        #storeList {
+            list-style: none;
+            padding: 0;
+            margin-top: 25px;
+            width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        #storeList li {
+            background-color: #3a3a3a;
+            border-radius: 10px;
+            padding: 14px 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        #storeList li:hover {
+            background-color: #4a4a4a;
+        }
+
+        #storeList a {
+            color: #1DB954;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        #storeList a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<form id="searchForm" action="/stores/search" method="get">
+    <input type="text" id="searchInput" name="query" placeholder="Search for stores...">
+    <button id="submitButton" type="submit">Search</button>
+</form>
+
+<ul id="storeList"></ul>
+
+<script>
+    const form = document.getElementById("searchForm");
+    const input = document.getElementById("searchInput");
+    const storeList = document.getElementById("storeList");
+
+    async function fetchStores(url) {
+        try {
+            const response = await fetch(url);
+            const stores = await response.json();
+            storeList.innerHTML = "";
+
+            if (stores.length === 0) {
+                storeList.innerHTML = "<li>No stores found.</li>";
+            } else {
+                stores.forEach(store => {
+                    const li = document.createElement("li");
+                    const link = document.createElement("a");
+                    link.href = `/stores/${store.id}`;
+                    link.textContent = `${store.name} - ${store.description}`;
+                    li.appendChild(link);
+                    storeList.appendChild(li);
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching stores:", error);
+            storeList.innerHTML = "<li>Failed to load stores.</li>";
+        }
+    }
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const query = input.value.trim();
+        if (query === "") {
+            fetchStores("/stores");
+        } else {
+            fetchStores(`/api/stores/search?query=${encodeURIComponent(query)}`);
+        }
+    });
+
+    window.addEventListener("DOMContentLoaded", () => fetchStores("/stores"));
+</script>
+</body>
+</html>

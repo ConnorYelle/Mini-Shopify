@@ -27,7 +27,7 @@ class HomePageControllerTest {
     private StoreRepository storeRepository;
 
     @InjectMocks
-    private homePageController homePageController;
+    private HomePageController homePageController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
