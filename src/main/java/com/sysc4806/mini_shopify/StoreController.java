@@ -36,7 +36,11 @@ public class StoreController {
         return store.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    
+    @GetMapping("/{id}/page")
+    public String showStorePage(@PathVariable Long id, Model model) {
+        model.addAttribute("storeId", id);
+        return "store";
+    }
 
     // get the owner dashboard page for a store
     @GetMapping("/{id}/owner")

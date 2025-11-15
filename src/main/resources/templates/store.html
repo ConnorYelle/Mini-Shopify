@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Searching Stores</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #121212;
+            color: #FFFFFF;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 80px;
+        }
+
+        #storeList {
+            list-style: none;
+            padding: 0;
+            margin-top: 25px;
+            width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        #storeList li {
+            background-color: #3a3a3a;
+            border-radius: 10px;
+            padding: 14px 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        #storeList li:hover {
+            background-color: #4a4a4a;
+        }
+
+        #storeList a {
+            color: #1DB954;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        #storeList a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+
+<div id="storeCard" style="
+    width:360px;
+    background-color:#282828;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.4);
+    margin-top:25px;
+    line-height:1.6;
+"></div>
+
+<script>
+    const storeCard = document.getElementById("storeCard");
+
+    function displayStore(store) {
+        storeCard.innerHTML = `
+            <h2 style='margin-top:0;color:#1DB954;'>Store Details</h2>
+            <p><strong>ID:</strong> ${store.id}</p>
+            <p><strong>Name:</strong> ${store.name}</p>
+            <p><strong>Owner:</strong> ${store.owner || 'N/A'}</p>
+            <p><strong>Description:</strong> ${store.description}</p>
+            <p><strong>Category:</strong> ${store.category}</p>
+            <p><strong>Products:</strong> ${store.products?.length ? store.products.join(', ') : 'None'}</p>
+            <p><strong>Tags:</strong> ${store.tags?.length ? store.tags.join(', ') : 'None'}</p>
+        `;
+    }
+
+    const storeId = [[${storeId}]];
+
+    async function loadStore() {
+        try {
+            const response = await fetch(`/store/${storeId}`);
+            if (!response.ok) {
+                document.getElementById('storeCard').innerHTML = "<p>Store not found</p>";
+                return;
+            }
+            const store = await response.json();
+            displayStore(store);
+        } catch (err) {
+            console.error(err);
+            document.getElementById('storeCard').innerHTML = "<p>Error loading store</p>";
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadStore);
+
+</script>
+</body>
+</html>
