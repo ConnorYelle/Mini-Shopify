@@ -6,13 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/store")
@@ -36,7 +30,24 @@ public class StoreController {
         return store.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    
+    // update a store
+    @PutMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<Store> updateStore(@PathVariable Long id, @RequestBody Store updatedStore) {
+        Optional<Store> existingStore = storeRepository.findById(id);
+
+        if (existingStore.isPresent()) {
+            Store store = existingStore.get();
+            store.setName(updatedStore.getName());
+            store.setOwner(updatedStore.getOwner());
+            store.setCategory(updatedStore.getCategory());
+            store.setDescription(updatedStore.getDescription());
+            storeRepository.save(store);
+            return ResponseEntity.ok(store);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     // get the owner dashboard page for a store
     @GetMapping("/{id}/owner")
