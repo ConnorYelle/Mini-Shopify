@@ -7,18 +7,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-
 @Controller
 @RequestMapping("/products")
 public class ProductController {
 
     @Autowired
-    private productRepository productRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private StoreRepository storeRepository;
 
-    // DTO for receiving JSON
+    // DTO for incoming JSON
     public static class ProductCreateRequest {
         public String name;
         public String description;
@@ -26,8 +25,12 @@ public class ProductController {
         public int inventoryNumber;
     }
 
+    // Create product
     @PostMapping("/create/{storeId}")
-    public ResponseEntity<?> getProductView(@PathVariable Long storeId, @RequestBody ProductCreateRequest req, HttpSession session) {
+    public ResponseEntity<?> createProduct(
+            @PathVariable Long storeId,
+            @RequestBody ProductCreateRequest req,
+            HttpSession session) {
 
         Store store = storeRepository.findById(storeId).orElse(null);
         if (store == null) {
@@ -44,12 +47,14 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProduct(@PathVariable Long id) {
-        return productRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return productRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{storeId}/create")
     public String getProductView(@PathVariable Long storeId, Model model) {
         model.addAttribute("storeId", storeId);
-        return "products.html"; // name of the HTML file
+        return "products"; 
     }
 }

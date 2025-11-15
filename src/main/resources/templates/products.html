@@ -52,6 +52,7 @@
 <body>
 
 <h1>Add a New Product</h1>
+<h2 id="store-id"></h2>
 
 <form id="product-form">
     <input type="text" id="name" placeholder="Product Name" required />
@@ -67,10 +68,13 @@
     document.addEventListener('DOMContentLoaded', () => {
         const form = document.getElementById('product-form');
         const messageDiv = document.getElementById('message');
+        const storeIdDiv = document.getElementById('store-id');
 
-        // Grab store ID from URL: /store/{storeId}/owner
+        // Extract store ID from URL: /store/{storeId}/owner
         const pathParts = window.location.pathname.split('/');
-        const storeId = pathParts[2]; // index 2 -> storeId
+        const storeId = pathParts[2];
+
+        storeIdDiv.textContent = `Store ID: ${storeId}`;
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
