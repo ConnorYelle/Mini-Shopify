@@ -14,8 +14,7 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: read #This is required for actions/checkout
-    env:
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
     steps:
       - uses: actions/checkout@v4
 
