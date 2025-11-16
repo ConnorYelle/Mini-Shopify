@@ -16,7 +16,9 @@ public class Store {
     private Long id;
     private String name;
     private String owner;
+    @Column(name = "description")
     private String description;
+    @Column(name = "category")
     private String category;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
