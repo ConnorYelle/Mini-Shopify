@@ -9,6 +9,7 @@ The **Online Shop Management System** is a web application where merchants can c
 - [Website Link](#website-link)
 - [Usage](#usage)
 - [Sprints](#sprints)
+- [Milestone 2 Contributions](#milestone-2-contributions)
 - [Contributors](#contributors)
 
 ## Website Link
@@ -50,6 +51,16 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 - Early prototype - November 3rd, 2025
 - Alpha Release - November 17, 2025
 - Final demo - December 1, 2025
+
+## Milestone 2 Contributions
+Tommy Milestone 2 Contribution
+- Implemented Home Page, allowing adding store
+- Added a Owner dashboard allowing the owner to edit their store, such as changing the name of the store, description, adding inventory, removing inventory.
+- Added Owner dashboard tests
+- changed in-memory H2 database to persistent so store don't disappear when restarting SpringBoot
+- added search button
+- Fix bugs in dashboard and products
+
 
 ## Contributors
 - [Connor Yelle 101260641](https://github.com/ConnorYelle)
