@@ -59,7 +59,10 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 - Implemented Store page which shows the the store and its products
 - Made the DB schema
 - Added a test for SupaBase
-
+### Connor Milestone 2 Contributions
+- Implemented the store search feature
+- Added tests for the store search feature
+- Added a branch for the Supabase implementation (video presentation)
 
 ## Contributors
 - [Connor Yelle 101260641](https://github.com/ConnorYelle)
