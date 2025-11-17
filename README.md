@@ -55,7 +55,7 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 ## Milestone 2 Contributions
 Tommy Milestone 2 Contribution
 - Implemented Home Page, allowing adding store
-- Added a Owner dashboard allowing the owner to edit their store, such as changing the name of the store, description, adding inventory, removing inventory.
+- Added a Owner dashboard allowing the owner to edit their store, such as changing the name of the store, description
 - Added Owner dashboard tests
 - changed in-memory H2 database to persistent so store don't disappear when restarting SpringBoot
 - added search button
