@@ -34,18 +34,7 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 ![UML Diagram](docs/uml/mini-shopify-uml.png)
 
 ## Database Schema
-### Store
-![Store](docs/db-schema/store-schema.png)
-
-### Customer
-![Customer](docs/db-schema/customer-schema.png)
-
-### Orders
-![Orders](docs/db-schema/orders-schema.png)
-
-### Product
-![Product](docs/db-schema/product-schema.png)
-
+![Schema](docs/db-schema/db-schema.png)
 
 ## Sprints
 - Early prototype - November 3rd, 2025
