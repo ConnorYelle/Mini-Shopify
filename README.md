@@ -34,7 +34,16 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 
 ## Database Schema
 ### Store
-<img width="223" height="193" alt="Screenshot 2025-11-03 at 12 44 56 PM" src="https://github.com/user-attachments/assets/498aeea2-0af2-4116-b302-c463dea0a338" />
+![Store](docs/db-schema/store-schema.png)
+
+### Customer
+![Customer](docs/db-schema/customer-schema.png)
+
+### Orders
+![Orders](docs/db-schema/orders-schema.png)
+
+### Product
+![Product](docs/db-schema/product-schema.png)
 
 
 ## Sprints
