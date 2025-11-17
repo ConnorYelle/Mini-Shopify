@@ -12,7 +12,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,7 +25,8 @@ public class ProductControllerTest {
     @Mock
     private ProductRepository productRepository;
 
-    @Mock StoreRepository storeRepository;
+    @Mock
+    private StoreRepository storeRepository;
 
     @InjectMocks
     private ProductController productController;
@@ -38,42 +40,42 @@ public class ProductControllerTest {
 
     @Test
     void testCreateProduct() throws Exception {
-        Store store = new Store("TechStore", "Alice", null);
+        Store store = new Store("TechStore", "Alice", (String) null, null);
         store.setId(1L);
 
-        when(storeRepository.findById(anyLong())).thenReturn(Optional.of(store));
+        when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
 
-        Product product = new Product(store, "best product","Product 1", "Image1", 3);
-        product.setId(1L);
+        Product savedProduct = new Product(store, "best product", "Product 1", "Image1", 3);
+        savedProduct.setId(1L);
 
-        when(productRepository.save(any(Product.class))).thenReturn(product);
+        when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
 
-        ProductController.ProductCreateRequest productCreateRequest = new ProductController.ProductCreateRequest();
-        productCreateRequest.name = "best product";
-        productCreateRequest.description = "Product 1";
-        productCreateRequest.image = "Image1";
-        productCreateRequest.inventoryNumber = 3;
+        // JSON that your real controller expects
+        String json = """
+            {
+                "name": "best product",
+                "description": "Product 1",
+                "image": "Image1",
+                "inventoryNumber": 3
+            }
+            """;
 
-        //when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        //when(productRepository.save(any(Product.class))).thenReturn(product);
-
-        mockMvc.perform(post("/products/create/{storeId}", 1L)
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(productCreateRequest)))
+        mockMvc.perform(post("/products/1/create")
+                        .contentType("application/json")
+                        .content(json))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
-
     }
 
     @Test
     void testGetProductById() throws Exception {
-        Store store = new Store("TechStore", "Alice", null);
-        Product product = new Product(store, "best product","Product 1", "Image1", 3);
+        Store store = new Store("TechStore", "Alice", (String) null, null);
+        Product product = new Product(store, "best product", "Product 1", "Image1", 3);
         product.setId(1L);
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        mockMvc.perform(get("/products/{id}", 1L))
+        mockMvc.perform(get("/products/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
     }
