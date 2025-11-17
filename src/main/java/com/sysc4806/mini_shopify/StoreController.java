@@ -30,6 +30,24 @@ public class StoreController {
         return store.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<Store> updateStore(@PathVariable Long id, @RequestBody Store updatedStore) {
+        return storeRepository.findById(id)
+                .map(store -> {
+                    store.setName(updatedStore.getName());
+                    store.setOwner(updatedStore.getOwner());
+                    store.setCategory(updatedStore.getCategory());
+                    store.setDescription(updatedStore.getDescription());
+
+                    Store saved = storeRepository.save(store);
+
+                    return ResponseEntity.ok(saved);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
     @GetMapping("/{id}/page")
     public String showStorePage(@PathVariable Long id, Model model) {
         model.addAttribute("storeId", id);
