@@ -30,23 +30,10 @@ public class StoreController {
         return store.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // update a store
-    @PutMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<Store> updateStore(@PathVariable Long id, @RequestBody Store updatedStore) {
-        Optional<Store> existingStore = storeRepository.findById(id);
-
-        if (existingStore.isPresent()) {
-            Store store = existingStore.get();
-            store.setName(updatedStore.getName());
-            store.setOwner(updatedStore.getOwner());
-            store.setCategory(updatedStore.getCategory());
-            store.setDescription(updatedStore.getDescription());
-            storeRepository.save(store);
-            return ResponseEntity.ok(store);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/{id}/page")
+    public String showStorePage(@PathVariable Long id, Model model) {
+        model.addAttribute("storeId", id);
+        return "store";
     }
 
     // get the owner dashboard page for a store

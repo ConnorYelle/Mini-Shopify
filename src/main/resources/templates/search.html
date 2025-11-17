@@ -120,7 +120,7 @@
                 stores.forEach(store => {
                     const li = document.createElement("li");
                     const link = document.createElement("a");
-                    link.href = `/stores/${store.id}`;
+                    link.href = `/store/${store.id}/page`;
                     link.textContent = `${store.name} - ${store.description}`;
                     li.appendChild(link);
                     storeList.appendChild(li);
