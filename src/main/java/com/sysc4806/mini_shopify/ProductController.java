@@ -1,7 +1,6 @@
 package com.sysc4806.mini_shopify;
 
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,59 +8,61 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @Controller
 @RequestMapping("/products")
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final StoreRepository storeRepository;
 
-    @Autowired
-    private StoreRepository storeRepository;
-
-    // DTO for receiving JSON
-    public static class ProductCreateRequest {
-        public String name;
-        public String description;
-        public String image;
-        public int inventoryNumber;
+    public ProductController(ProductRepository productRepository, StoreRepository storeRepository) {
+        this.productRepository = productRepository;
+        this.storeRepository = storeRepository;
     }
 
-    @PostMapping("/create/{storeId}")
-    public ResponseEntity<?> getProductView(@PathVariable Long storeId, @RequestBody ProductCreateRequest req) {
-
+    // --- Create a product for a given store ---
+    @PostMapping("/{storeId}/create")
+    public ResponseEntity<?> createProduct(@PathVariable Long storeId, @RequestBody Product product) {
         try {
-            Store store = storeRepository.findById(storeId).orElse(null);
-            if (store == null) {
-                return ResponseEntity.badRequest().body("Store not found.");
-            }
+            Store store = storeRepository.findById(storeId)
+                    .orElseThrow(() -> new RuntimeException("Store not found"));
 
-            Product p = new Product(store, req.name, req.description, req.image, req.inventoryNumber);
+            // Link product to store before saving
+            product.setStore(store);
 
-            store.addProduct(p);
-            Product saved = productRepository.save(p);
+            Product savedProduct = productRepository.save(product);
 
-            return ResponseEntity.ok(saved);
+            return ResponseEntity.ok(savedProduct);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getProduct(@PathVariable Long id) {
-        return productRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-    }
-
+    // --- Return HTML view for product creation page ---
     @GetMapping("/{storeId}/create")
     public String getProductView(@PathVariable Long storeId, Model model) {
         model.addAttribute("storeId", storeId);
-        return "products"; // name of the HTML file
+        return "products"; // name of the HTML file (Thymeleaf or other template)
     }
 
+    // --- Get a single product by ID ---
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProduct(@PathVariable Long id) {
+        return productRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // --- Get all products for a store ---
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<Product>> getProductsByStore(@PathVariable Long storeId) {
         return ResponseEntity.ok(productRepository.findByStoreId(storeId));
+    }
+
+    // Optional: Get all products (for testing)
+    @GetMapping("/all")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok((List<Product>) productRepository.findAll());
     }
 }
