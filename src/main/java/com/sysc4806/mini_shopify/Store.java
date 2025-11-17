@@ -1,5 +1,6 @@
 package com.sysc4806.mini_shopify;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,13 @@ public class Store {
     private Long id;
     private String name;
     private String owner;
+    @Column(name = "description")
     private String description;
+    @Column(name = "category")
     private String category;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Product> products = new ArrayList<>();
 
     @ElementCollection
@@ -93,6 +97,7 @@ public class Store {
      */
     public void addProduct(Product product) {
         this.products.add(product);
+        product.setStore(this);
     }
 
     /*

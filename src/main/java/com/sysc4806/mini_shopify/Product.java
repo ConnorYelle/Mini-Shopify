@@ -1,14 +1,14 @@
 package com.sysc4806.mini_shopify;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Product {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
@@ -16,6 +16,8 @@ public class Product {
     private String description;
 
     private String image;
+
+    private String name;
 
     private int inventoryNumber;
 
@@ -29,11 +31,19 @@ public class Product {
 
     public Product(){}
 
-    public Product(Store store, String description, String image, int inventoryNumber) {
+    public Product(Store store,String name, String description, String image, int inventoryNumber) {
         this.store = store;
+        this.name = name;
         this.description = description;
         this.image = image;
         this.inventoryNumber = inventoryNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Store getStore() {
