@@ -56,13 +56,18 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 - Fixed tests for Product Controller
 - Added methods to Product Controller
 ### Jonas Milestone 2 Contributions
-- Implemented Store page which shows the the store and its products
+- Implemented Store page which shows the store and its products
 - Made the DB schema
 - Added a test for SupaBase
 ### Connor Milestone 2 Contributions
 - Implemented the store search feature
 - Added tests for the store search feature
 - Added a branch for the Supabase implementation (video presentation)
+### Umniyah's Milestone 2 Contribution
+- Designed and updated the PlantUML class diagram to represent entities and their relationships
+- Implemented a Cart feature with REST endpoints: Cart, CartItem, CartRepository, and CartController. Users can retrieve, add, and clear items in a cart
+- Ensured proper JPA mapping between Cart and CartItem with bidirectional relationships for database persistence
+- Integrated the Cart functionality with existing Product entities
 
 ## Contributors
 - [Connor Yelle 101260641](https://github.com/ConnorYelle)
