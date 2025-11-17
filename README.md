@@ -60,7 +60,12 @@ Tommy Milestone 2 Contribution
 - changed in-memory H2 database to persistent so store don't disappear when restarting SpringBoot
 - added search button
 - Fix bugs in dashboard and products
-
+Owen Milestone 2 Contributions
+- Implemented Product page, allowing adding of products, viewing of products
+- Fixed bugs to allow products to persist to each store
+- Fixed bug with database to allow for id generation
+- Fixed tests for Product Controller
+- Added methods to Product Controller
 
 ## Contributors
 - [Connor Yelle 101260641](https://github.com/ConnorYelle)
