@@ -22,7 +22,7 @@ public class ProductControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private productRepository productRepository;
+    private ProductRepository productRepository;
 
     @Mock StoreRepository storeRepository;
 

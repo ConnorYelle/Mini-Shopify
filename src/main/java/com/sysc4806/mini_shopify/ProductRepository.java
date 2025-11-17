@@ -5,9 +5,11 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface productRepository extends CrudRepository<Product, Long> {
+public interface ProductRepository extends CrudRepository<Product, Long> {
 
     Optional<Product> findById(Long id);
+
+    List<Product> findByStoreId(Long storeId);
 
     List<Product> id(Long id);
 }

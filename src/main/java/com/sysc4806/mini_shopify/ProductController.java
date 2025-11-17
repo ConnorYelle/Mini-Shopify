@@ -7,13 +7,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/products")
 public class ProductController {
 
     @Autowired
-    private productRepository productRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private StoreRepository storeRepository;
@@ -27,19 +29,24 @@ public class ProductController {
     }
 
     @PostMapping("/create/{storeId}")
-    public ResponseEntity<?> getProductView(@PathVariable Long storeId, @RequestBody ProductCreateRequest req, HttpSession session) {
+    public ResponseEntity<?> getProductView(@PathVariable Long storeId, @RequestBody ProductCreateRequest req) {
 
-        Store store = storeRepository.findById(storeId).orElse(null);
-        if (store == null) {
-            return ResponseEntity.badRequest().body("Store not found.");
+        try {
+            Store store = storeRepository.findById(storeId).orElse(null);
+            if (store == null) {
+                return ResponseEntity.badRequest().body("Store not found.");
+            }
+
+            Product p = new Product(store, req.name, req.description, req.image, req.inventoryNumber);
+
+            store.addProduct(p);
+            Product saved = productRepository.save(p);
+
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        Product p = new Product(store, req.name, req.description, req.image, req.inventoryNumber);
-
-        store.addProduct(p);
-        Product saved = productRepository.save(p);
-
-        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/{id}")
@@ -50,6 +57,11 @@ public class ProductController {
     @GetMapping("/{storeId}/create")
     public String getProductView(@PathVariable Long storeId, Model model) {
         model.addAttribute("storeId", storeId);
-        return "products.html"; // name of the HTML file
+        return "products"; // name of the HTML file
+    }
+
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<List<Product>> getProductsByStore(@PathVariable Long storeId) {
+        return ResponseEntity.ok(productRepository.findByStoreId(storeId));
     }
 }
