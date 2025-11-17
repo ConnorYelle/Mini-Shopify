@@ -21,7 +21,7 @@ public class ProductTest {
         List<String> initialTags = new ArrayList<>(Arrays.asList("electronics", "gadgets"));
         store = new Store("TechStore", "Alice", initialTags);
 
-        product = new Product(store, "Product 1", "Image1", 3);
+        product = new Product(store, "best product","Product 1", "Image1", 3);
 
     }
 

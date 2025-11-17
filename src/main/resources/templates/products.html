@@ -2,9 +2,179 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #121212;
+            color: #FFFFFF;
+        }
+        h1, h2 {
+            color: #1DB954;
+            margin-bottom: 20px;
+        }
+        form input, form button {
+            display: block;
+            margin: 10px 0;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        form input {
+            background-color: #282828;
+            color: #FFFFFF;
+        }
+        form input::placeholder {
+            color: #b3b3b3;
+        }
+        button {
+            background-color: #1DB954;
+            color: #FFFFFF;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+        }
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        /* Product cards */
+        #products-list {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .product-card {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #282828;
+        }
+        .product-card img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .product-card h3 {
+            margin: 0 0 10px 0;
+            color: #1DB954;
+        }
+    </style>
 </head>
 <body>
+
+<h1>Add a New Product</h1>
+
+<form id="product-form">
+    <input type="text" id="name" placeholder="Product Name" required />
+    <input type="text" id="description" placeholder="Product Description" required />
+    <input type="url" id="image" placeholder="Image URL" required />
+    <input type="number" id="inventoryNumber" placeholder="Inventory Number" min="0" required />
+    <button type="submit">Create Product</button>
+</form>
+
+<div id="message"></div>
+
+<h2>Products</h2>
+<div id="products-list"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('product-form');
+        const messageDiv = document.getElementById('message');
+        const productsList = document.getElementById('products-list');
+
+        // --- Extract the store ID from the URL ---
+        const pathParts = window.location.pathname.split('/');
+        const storeId = pathParts[pathParts.length - 2];
+
+        // --- Load existing products on page load ---
+        async function loadProducts() {
+            try {
+                const response = await fetch(`/products/store/${storeId}`);
+                if (!response.ok) throw new Error("Failed to fetch products.");
+
+                const products = await response.json();
+                productsList.innerHTML = ""; // Clear list first
+
+                products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.classList.add('product-card');
+                    productDiv.innerHTML = `
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <img src="${product.image}" alt="${product.name}" />
+                        <p><strong>Inventory:</strong> ${product.inventoryNumber}</p>
+                    `;
+                    productsList.appendChild(productDiv);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Call loadProducts() as soon as the page loads
+        loadProducts();
+
+        // --- Handle Creating Products ---
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const productData = {
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                image: document.getElementById('image').value,
+                inventoryNumber: parseInt(document.getElementById('inventoryNumber').value, 10)
+            };
+
+            try {
+                const response = await fetch(`/products/create/${storeId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData)
+                });
+
+                if (response.ok) {
+                    const savedProduct = await response.json();
+
+                    messageDiv.style.color = '#1DB954';
+                    messageDiv.textContent = `Product "${savedProduct.name}" created successfully!`;
+
+                    form.reset();
+
+                    // Add newly created product to the top
+                    const productDiv = document.createElement('div');
+                    productDiv.classList.add('product-card');
+                    productDiv.innerHTML = `
+                        <h3>${savedProduct.name}</h3>
+                        <p>${savedProduct.description}</p>
+                        <img src="${savedProduct.image}" alt="${savedProduct.name}" />
+                        <p><strong>Inventory:</strong> ${savedProduct.inventoryNumber}</p>
+                    `;
+                    productsList.prepend(productDiv);
+
+                } else {
+                    const errorText = await response.text();
+                    messageDiv.style.color = '#FF4C4C';
+                    messageDiv.textContent = `Failed to create product: ${errorText}`;
+                }
+            } catch (err) {
+                messageDiv.style.color = '#FF4C4C';
+                messageDiv.textContent = `Error: ${err.message}`;
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
