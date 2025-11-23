@@ -60,9 +60,36 @@ public class ProductController {
         return ResponseEntity.ok(productRepository.findByStoreId(storeId));
     }
 
-    // Optional: Get all products (for testing)
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok((List<Product>) productRepository.findAll());
     }
+
+    // Get inventory count for a store
+    @GetMapping("/store/{storeId}/inventory")
+    public ResponseEntity<?> getInventoryCount(@PathVariable Long storeId) {
+        try {
+            // Ensure store exists
+            boolean exists = storeRepository.existsById(storeId);
+            if (!exists) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Store not found");
+            }
+
+            int count = productRepository.findByStoreId(storeId).size();
+
+            return ResponseEntity.ok().body(new InventoryResponse(count));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error getting inventory");
+        }
+    }
+    static class InventoryResponse {
+        public int count;
+
+        public InventoryResponse(int count) {
+            this.count = count;
+        }
+    }
+
 }
