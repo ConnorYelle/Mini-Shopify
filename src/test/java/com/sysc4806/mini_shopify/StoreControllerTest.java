@@ -21,20 +21,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-class HomePageControllerTest {
+class StoreControllerTest {
 
     @Mock
     private StoreRepository storeRepository;
 
     @InjectMocks
-    private HomePageController homePageController;
+    private StoreController storeController;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(homePageController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(storeController).build();
         objectMapper = new ObjectMapper();
     }
 
@@ -46,7 +46,8 @@ class HomePageControllerTest {
         store2.setId(2L);
         List<Store> stores = Arrays.asList(store1, store2);
         when(storeRepository.findAll()).thenReturn(stores);
-        mockMvc.perform(get("/stores"))
+
+        mockMvc.perform(get("/store"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("TechStore"))
                 .andExpect(jsonPath("$[1].name").value("BookShop"));
@@ -60,7 +61,7 @@ class HomePageControllerTest {
         store.setId(1L);
         when(storeRepository.save(any(Store.class))).thenReturn(store);
 
-        mockMvc.perform(post("/stores")
+        mockMvc.perform(post("/store") //
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(store)))
                 .andExpect(status().isOk())
@@ -77,7 +78,7 @@ class HomePageControllerTest {
         store.setId(1L);
         when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
 
-        mockMvc.perform(get("/stores/1"))
+        mockMvc.perform(get("/store/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("TechStore"));
@@ -89,7 +90,7 @@ class HomePageControllerTest {
     void testGetStoreNotFound() throws Exception {
         when(storeRepository.findById(99L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/stores/99"))
+        mockMvc.perform(get("/store/99")) // 
                 .andExpect(status().isNotFound());
 
         verify(storeRepository, times(1)).findById(99L);
@@ -97,15 +98,15 @@ class HomePageControllerTest {
 
     @Test
     void testUpdateStore() throws Exception {
-        Store existingStore = new Store("OldName", "Alice", "Tech","Old");
+        Store existingStore = new Store("OldName", "Alice", "Tech", "Old");
         existingStore.setId(1L);
 
-        Store updatedStore = new Store("NewName", "Alice", "Shoes","New");
+        Store updatedStore = new Store("NewName", "Alice", "Shoes", "New");
 
         when(storeRepository.findById(1L)).thenReturn(Optional.of(existingStore));
         when(storeRepository.save(any(Store.class))).thenAnswer(i -> i.getArgument(0));
 
-        mockMvc.perform(put("/stores/1")
+        mockMvc.perform(put("/store/1") // <-- updated URL
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedStore)))
                 .andExpect(status().isOk())
@@ -117,12 +118,14 @@ class HomePageControllerTest {
 
     @Test
     void testUpdateStoreNotFound() throws Exception {
-        Store updatedStore = new Store("NewName", "Alice", "New Tag","New description");
+        Store updatedStore = new Store("NewName", "Alice", "New Tag", "New description");
         when(storeRepository.findById(1L)).thenReturn(Optional.empty());
-        mockMvc.perform(put("/stores/1")
+
+        mockMvc.perform(put("/store/1") // <-- updated URL
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedStore)))
                 .andExpect(status().isNotFound());
+
         verify(storeRepository, times(1)).findById(1L);
         verify(storeRepository, never()).save(any(Store.class));
     }

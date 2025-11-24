@@ -35,7 +35,7 @@ class SearchIntegrationTest {
     @Test
     void searchStores_integration_returnsRealResults() throws Exception {
         mockMvc.perform(
-                        get("/api/stores/search")
+                        get("/store/api/search")
                                 .param("query", "buy")
                 )
                 .andExpect(status().isOk())

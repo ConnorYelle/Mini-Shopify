@@ -14,7 +14,7 @@ public class Customer {
     private String email;
     private String phoneNumber;
 
-    private Customer(){
+    public Customer(){
     }
 
     private Customer(String firstName, String lastName, String email, String phoneNumber){

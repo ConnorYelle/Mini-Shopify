@@ -10,7 +10,7 @@
             flex-direction: column;
             align-items: center;
             font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: #121212;
+            background-color: #232323;
             color: #FFFFFF;
             min-height: 100vh;
             margin: 0;
@@ -136,13 +136,13 @@
         e.preventDefault();
         const query = input.value.trim();
         if (query === "") {
-            fetchStores("/stores");
+            fetchStores("/store");
         } else {
-            fetchStores(`/api/stores/search?query=${encodeURIComponent(query)}`);
+            fetchStores(`/store/api/search?query=${encodeURIComponent(query)}`);
         }
     });
 
-    window.addEventListener("DOMContentLoaded", () => fetchStores("/stores"));
+    window.addEventListener("DOMContentLoaded", () => fetchStores("/store"));
 </script>
 </body>
 </html>
