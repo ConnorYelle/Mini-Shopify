@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini-Shopify</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #232323;
+            color: #FFFFFF;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1DB954;
+            font-size: 48px;
+            margin-bottom: 40px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .home-btn {
+            background-color: #1DB954;
+            color: #FFFFFF;
+            font-weight: bold;
+            padding: 18px 32px;
+            border-radius: 10px;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .home-btn:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+        }
+
+        .home-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+<h1>Welcome to Mini-Shopify</h1>
+
+<div class="button-container">
+    <button class="home-btn" onclick="window.location.href='/merchant'">
+        Merchant Portal
+    </button>
+
+    <button class="home-btn" onclick="window.location.href='/customer'">
+        Customer Portal
+    </button>
+</div>
+
+</body>
+</html>

@@ -14,7 +14,7 @@ public class storeHomePageTest {
 
     @Test
     public void testHtmlElements() throws IOException {
-        File input = new File("src/main/resources/templates/storeHomePage.html");
+        File input = new File("src/main/resources/templates/createStore.html");
         Document doc = Jsoup.parse(input, "UTF-8");
 
         assertEquals("Mini-Shopify", doc.title());
