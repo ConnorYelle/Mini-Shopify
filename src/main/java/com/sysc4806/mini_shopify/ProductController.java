@@ -43,7 +43,7 @@ public class ProductController {
     @GetMapping("/{storeId}/create")
     public String getProductView(@PathVariable Long storeId, Model model) {
         model.addAttribute("storeId", storeId);
-        return "products"; // name of the HTML file (Thymeleaf or other template)
+        return "products";
     }
 
     // --- Get a single product by ID ---
@@ -64,5 +64,11 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok((List<Product>) productRepository.findAll());
+    }
+
+    @GetMapping("/select-store")
+    public String selectStorePage(Model model) {
+        model.addAttribute("stores", storeRepository.findAll());
+        return "selectStoreForProduct";
     }
 }

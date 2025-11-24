@@ -31,3 +31,6 @@ Caused by: java.lang.AssertionError
 	at org.h2.mvstore.FileStore.executeFileStoreOperation(FileStore.java:1893)
 	at org.h2.mvstore.MVStore.executeFilestoreOperation(MVStore.java:922)
 	... 13 more
+2025-11-24 16:36:55.292345-05:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/jpeg;base64,/9j/4Rc4RXhpZgAASUkqAAgAAAAQAAABAwABAAAAsA8AAAEBAwABAAAA... (20168467)"; SQL statement:
+insert into product (description,image,inventory_number,name,store_id,id) values (?,?,?,?,?,?) [22001-232]
