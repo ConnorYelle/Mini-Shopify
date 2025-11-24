@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Merchant Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #232323;
+            color: #FFFFFF;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        h1 {
+            color: #1DB954;
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #b3b3b3;
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 280px;
+        }
+
+        .dash-btn {
+            background-color: #1DB954;
+            color: #FFFFFF;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .dash-btn:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+        }
+
+        .dash-btn:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Merchant Dashboard</h1>
+<p>You are logged in as a <strong>Merchant</strong>.</p>
+
+<div class="button-container">
+
+    <button class="dash-btn" onclick="window.location.href='store/create'">
+        Create Store
+    </button>
+
+    <button class="dash-btn" onclick="window.location.href='/merchant/create-item'">
+        Create Item
+    </button>
+
+    <button class="dash-btn" onclick="window.location.href='/merchant/stores'">
+        View My Stores
+    </button>
+
+    <button class="dash-btn" onclick="window.location.href='/'">
+        Return Home
+    </button>
+
+</div>
+
+</body>
+</html>
