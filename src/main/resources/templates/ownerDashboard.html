@@ -154,7 +154,18 @@
 </div>
 
 <!-- top right quadrant -->
-<div class="quadrant top-right"></div>
+<!-- top right quadrant -->
+<div class="quadrant top-right">
+    <h2>Store Inventory</h2>
+
+    <ul id="inventory-list">
+        <li>Loading inventory...</li>
+    </ul>
+
+    <button id="manage-products-btn">Manage Products</button>
+</div>
+
+
 
 <!-- bottom left quadrant -->
 <div class="quadrant bottom-left">
@@ -189,6 +200,37 @@
             document.getElementById('welcome-msg').textContent = "Store not found.";
             document.getElementById('store-form').style.display = "none";
         });
+
+    fetch(`/products/store/${storeId}`)
+        .then(response => {
+            if (!response.ok) throw new Error("Products not found");
+            return response.json();
+        })
+        .then(products => {
+            const list = document.getElementById("inventory-list");
+            list.innerHTML = ""; // clear "loading"
+
+            if (products.length === 0) {
+                list.innerHTML = "<li>No products in inventory.</li>";
+                return;
+            }
+
+            products.forEach(product => {
+                const li = document.createElement("li");
+                li.textContent = `${product.name} — Quantity: ${product.inventoryNumber}`;
+                list.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+            document.getElementById("inventory-list").innerHTML =
+                "<li>Unable to load inventory.</li>";
+        });
+
+
+    document.getElementById("manage-products-btn").addEventListener("click", () => {
+        window.location.href = `/products/${storeId}/create`;
+    });
 
     function saveChanges() {
         const storeData = {
