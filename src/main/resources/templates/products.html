@@ -80,6 +80,7 @@
     <input type="text" id="description" placeholder="Product Description" required />
     <input type="url" id="image" placeholder="Image URL" required />
     <input type="number" id="inventoryNumber" placeholder="Inventory Number" min="0" required />
+    <input type="number" id="price" placeholder="Price" min = "0" required />
     <button type="submit">Create Product</button>
 </form>
 
@@ -115,6 +116,7 @@
                         <p>${product.description}</p>
                         <img src="${product.image}" alt="${product.name}" />
                         <p><strong>Inventory:</strong> ${product.inventoryNumber}</p>
+                        <p><strong>Price:</strong> ${product.price}</p>
                     `;
                     productsList.appendChild(productDiv);
                 });
@@ -134,7 +136,8 @@
                 name: document.getElementById('name').value,
                 description: document.getElementById('description').value,
                 image: document.getElementById('image').value,
-                inventoryNumber: parseInt(document.getElementById('inventoryNumber').value, 10)
+                inventoryNumber: parseInt(document.getElementById('inventoryNumber').value, 10),
+                price: parseFloat(document.getElementById('price').value, 10)
             };
 
             try {
@@ -160,6 +163,7 @@
                         <p>${savedProduct.description}</p>
                         <img src="${savedProduct.image}" alt="${savedProduct.name}" />
                         <p><strong>Inventory:</strong> ${savedProduct.inventoryNumber}</p>
+                        <p><strong>Price:</strong> ${savedProduct.price}</p>
                     `;
                     productsList.prepend(productDiv);
 

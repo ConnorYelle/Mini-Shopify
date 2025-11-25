@@ -12,42 +12,39 @@ if it falls under certain tags/categories.
  */
 @Entity
 public class Store {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String owner;
-    @Column(name = "description")
     private String description;
-    @Column(name = "category")
+
+    // Optional single main category
     private String category;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
-    private List<Product> products = new ArrayList<>();
-
+    // Optional list of tags/subcategories
     @ElementCollection
     private List<String> tags = new ArrayList<>();
 
-    /*
-    Default constructor for JPA reflection
-     */
-    public Store() {}
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Product> products = new ArrayList<>();
 
-    /*
-    Create new store with name, owner, and categories relevant to the shop
-     */
-    public Store(String name, String owner, List<String> categories) {
-        this.name = name;
-        this.owner = owner;
-        this.tags = categories;
-    }
+    public Store() {}
 
     public Store(String name, String owner, String category, String description) {
         this.name = name;
         this.owner = owner;
         this.category = category;
         this.description = description;
+    }
+
+    public Store(String name, String owner, List<String> tags) {
+        this.name = name;
+        this.owner = owner;
+        this.tags = tags;
     }
 
     // --- Getters and Setters ---
