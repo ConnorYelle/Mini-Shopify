@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Searching Stores</title>
+    <meta charset="UTF-8" />
+    <title>Store</title>
     <style>
         body {
             display: flex;
@@ -16,54 +16,132 @@
             padding-top: 80px;
         }
 
+        #storeCard {
+            width: 90%;
+            background-color: #282828;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            margin-top: 25px;
+            line-height: 1.6;
+        }
+
+        #product-list {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #282828;
+            text-align: center;
+        }
+
+        .product-card img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .product-card h4 {
+            margin: 5px 0;
+            color: #1DB954;
+        }
+
+        .product-card p {
+            margin: 5px 0;
+        }
     </style>
 </head>
 
 <body>
 
-<div id="storeCard" style="
-    width:90%;
-    background-color:#282828;
-    padding:40px;
-    border-radius:12px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.4);
-    margin-top:25px;
-    line-height:1.6;
-"></div>
+<div id="storeCard">
+    <h3 style="color:#1DB954; margin-top: 20px;">Products</h3>
+    <div id="product-list">Loading products...</div>
+</div>
 
 <script>
     const storeCard = document.getElementById("storeCard");
+    const storeId = [[${storeId}]]; // Thymeleaf variable or set via JS
 
+    // ---- Display store info ----
     function displayStore(store) {
         storeCard.innerHTML = `
             <h2 style='margin-top:0;color:#1DB954;'>${store.name}</h2>
             <p><strong>Owner:</strong> ${store.owner || 'N/A'}</p>
-            <p><strong>Description:</strong> ${store.description}</p>
-            <p><strong>Category:</strong> ${store.category}</p>
-            <p><strong>Products:</strong> ${store.products?.length ? store.products.join(', ') : 'None'}</p>
-            <p><strong>Tags:</strong> ${store.tags?.length ? store.tags.join(', ') : 'None'}</p>
+            <p><strong>Description:</strong> ${store.description || 'N/A'}</p>
+            <p><strong>Category:</strong> ${store.category || 'N/A'}</p>
+            <h3 style="color:#1DB954; margin-top: 20px;">Products</h3>
+            <div id="product-list">Loading products...</div>
         `;
     }
 
-    const storeId = [[${storeId}]];
-
+    // ---- Load store info from backend ----
     async function loadStore() {
         try {
             const response = await fetch(`/store/${storeId}`);
             if (!response.ok) {
-                document.getElementById('storeCard').innerHTML = "<p>Store not found</p>";
+                storeCard.innerHTML = "<p>Store not found</p>";
                 return;
             }
+
             const store = await response.json();
             displayStore(store);
         } catch (err) {
             console.error(err);
-            document.getElementById('storeCard').innerHTML = "<p>Error loading store</p>";
+            storeCard.innerHTML = "<p>Error loading store</p>";
         }
     }
 
-    window.addEventListener('DOMContentLoaded', loadStore);
+    // ---- Load products ----
+    async function loadProducts() {
+        try {
+            const response = await fetch(`/products/store/${storeId}`);
+            if (!response.ok) throw new Error("Products not found");
 
+            const products = await response.json();
+            const list = document.getElementById("product-list");
+            list.innerHTML = "";
+
+            if (products.length === 0) {
+                list.innerHTML = "<p>No products available.</p>";
+                return;
+            }
+
+            products.forEach(product => {
+                const productDiv = document.createElement("div");
+                productDiv.classList.add("product-card");
+                productDiv.innerHTML = `
+                    <h4>${product.name}</h4>
+                    <img src="${product.image}" alt="${product.name}" />
+                    <p>${product.description}</p>
+                    <p><strong>Inventory:</strong> ${product.inventoryNumber}</p>
+                    <p><strong>Price:</strong> $${parseFloat(product.price).toFixed(2)}</p>
+                `;
+                list.appendChild(productDiv);
+            });
+
+        } catch (error) {
+            console.error(error);
+            const list = document.getElementById("product-list");
+            if (list) {
+                list.innerHTML = "<p>Error loading products.</p>";
+            }
+        }
+    }
+
+    // ---- Load everything when page is ready ----
+    window.addEventListener("DOMContentLoaded", () => {
+        loadStore();
+        // Delay product loading slightly to ensure the product-list div exists
+        setTimeout(loadProducts, 200);
+    });
 </script>
+
 </body>
 </html>

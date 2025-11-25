@@ -45,18 +45,18 @@ public class ProductControllerTest {
 
         when(storeRepository.findById(1L)).thenReturn(Optional.of(store));
 
-        Product savedProduct = new Product(store, "best product", "Product 1", "Image1", 3);
+        Product savedProduct = new Product(store, "best product", "Product 1", "Image1", 3, 2.99);
         savedProduct.setId(1L);
 
         when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
 
-        // JSON that your real controller expects
         String json = """
             {
                 "name": "best product",
                 "description": "Product 1",
                 "image": "Image1",
-                "inventoryNumber": 3
+                "inventoryNumber": 3,
+                "price": 2.99
             }
             """;
 
@@ -70,7 +70,7 @@ public class ProductControllerTest {
     @Test
     void testGetProductById() throws Exception {
         Store store = new Store("TechStore", "Alice", (String) null, null);
-        Product product = new Product(store, "best product", "Product 1", "Image1", 3);
+        Product product = new Product(store, "best product", "Product 1", "Image1", 3, 2.99);
         product.setId(1L);
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));

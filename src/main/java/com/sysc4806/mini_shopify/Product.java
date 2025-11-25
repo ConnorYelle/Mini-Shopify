@@ -21,6 +21,8 @@ public class Product {
 
     private int inventoryNumber;
 
+    private double price;
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -31,17 +33,19 @@ public class Product {
 
     public Product(){}
 
-    public Product(Store store,String name, String description, String image, int inventoryNumber) {
+    public Product(Store store,String name, String description, String image, int inventoryNumber, double price) {
         this.store = store;
         this.name = name;
         this.description = description;
         this.image = image;
         this.inventoryNumber = inventoryNumber;
+        this.price = price;
     }
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -49,8 +53,17 @@ public class Product {
     public Store getStore() {
         return store;
     }
+
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public String getDescription() {
