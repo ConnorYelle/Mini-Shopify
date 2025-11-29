@@ -26,7 +26,12 @@ public class StoreController {
     // Search page
     @GetMapping("/search")
     public String showSearchPage() {
-        return "search";
+        return "customerSearchForStores";
+    }
+
+    @GetMapping("/search/merchant")
+    public String showSearchMerchantPage() {
+        return "merchantSearchForStores";
     }
 
     // Individual store page

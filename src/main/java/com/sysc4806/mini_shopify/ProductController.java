@@ -61,6 +61,12 @@ public class ProductController {
         return ResponseEntity.ok((List<Product>) productRepository.findAll());
     }
 
+    @GetMapping("/select-store")
+    public String selectStorePage(Model model) {
+        model.addAttribute("stores", storeRepository.findAll());
+        return "selectStoreForProduct";
+    }
+    // Get inventory count for a store
     @GetMapping("/store/{storeId}/inventory")
     public ResponseEntity<?> getInventoryCount(@PathVariable Long storeId) {
         try {
