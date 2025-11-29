@@ -16,6 +16,11 @@
             margin: 0;
             padding-top: 80px;
         }
+        #pageTitle {
+            color: #1DB954;
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
 
         #searchForm {
             display: flex;
@@ -96,6 +101,7 @@
 </head>
 
 <body>
+<h1 id="pageTitle">Search stores</h1>
 <form id="searchForm" action="/stores/search" method="get">
     <input type="text" id="searchInput" name="query" placeholder="Search for stores...">
     <button id="submitButton" type="submit">Search</button>
