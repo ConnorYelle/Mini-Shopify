@@ -97,4 +97,5 @@ public class Product {
     public void increaseInventoryNumber(){
         this.inventoryNumber++;
     }
+
 }
