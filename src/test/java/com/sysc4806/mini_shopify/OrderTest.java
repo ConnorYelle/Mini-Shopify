@@ -13,7 +13,7 @@ class OrderTest {
     void setUp() {
         order1 = new Order();
         order2 = new Order("462 Wilson Farm Rd", "Express",
-                "2165 Carling Ave", "Credit Card");
+                "2165 Carling Ave", "Credit Card", "test@test.com");
     }
 
     @Test
@@ -33,6 +33,7 @@ class OrderTest {
         assertEquals("Express", order2.getShippingMethod());
         assertEquals("2165 Carling Ave", order2.getBillingAddress());
         assertEquals("Credit Card", order2.getPaymentMethod());
+        assertEquals("test@test.com", order2.getEmail());
     }
 
     @Test
@@ -45,5 +46,7 @@ class OrderTest {
         assertEquals("290 Bremner Blvd", order1.getBillingAddress());
         order1.setPaymentMethod("Apple Pay");
         assertEquals("Apple Pay", order1.getPaymentMethod());
+        order1.setEmail("test@test.com");
+        assertEquals("test@test.com", order1.getEmail());
     }
 }
