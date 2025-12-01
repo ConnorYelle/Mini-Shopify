@@ -16,6 +16,8 @@ public class Cart {
     @JsonManagedReference
     private List<CartItem> items = new ArrayList<>();
 
+    private double totalPrice;
+
     public Cart() {}
 
     public Long getId() {
@@ -34,7 +36,41 @@ public class Cart {
         item.setCart(this);
     }
 
+    public void removeItem(CartItem item) {
+        if (item == null) return;
+        items.remove(item);
+        item.setCart(null);
+    }
+
+    public void removeItemById(Long itemId) {
+        items.removeIf(ci -> {
+            boolean match = ci != null && ci.getId() != null && ci.getId().equals(itemId);
+            if (match) ci.setCart(null);
+            return match;
+        });
+    }
+
     public void clearCart() {
         items.clear();
+    }
+
+    public void calculateTotal() {
+        double total = 0.0;
+        if (this.items != null) {
+            for (CartItem ci : this.items) {
+                if (ci == null) continue;
+                int qty = Math.max(0, ci.getQuantity());
+                double price = 0.0;
+                if (ci.getProduct() != null) {
+                    price = ci.getProduct().getPrice();
+                }
+                total += price * qty;
+            }
+        }
+        this.totalPrice = total;
+    }
+
+    public double getTotalPrice() {
+        return this.totalPrice;
     }
 }
