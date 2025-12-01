@@ -55,7 +55,7 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 ### Jonas Milestone 3 Contributions
 - Implemented the invoice generator for an order.
 - Updated tests in Order and OrderController to reflect the changes.
-- Connected my invoice genereator to the checkout.
+- Connected my invoice generator to the checkout.
 
 ### Connor Milestone 3 Contributions
 - Implemented the customer and merchant homepages
@@ -63,6 +63,14 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 - Added tests for both homepages
 
 ### Umniyah's Milestone 3 Contribution
+- Adapted work when cart page work was duplicated by teammate; shifted focus to other integration, docs, and tests.
+- Added full product editing UI (inventory & price) with Save/Cancel interactions and JSON-based update requests.
+- Updated UML diagram to include Cart, CartItem, updated controller relationships, and correct domain associations.
+- Updated database schema documentation to include cart and cart_item tables and relationships.
+- Implemented backend product update endpoint (PUT /products/{storeId}/{productId}/update).
+- Added safety logic preventing deletion of products that exist in any cart (via CartItemRepository).
+- Reorganized checkout page so cart review appears before user information to improve UX.
+- Added complete unit tests for Cart (add/remove/clear/total) and CartItem (quantity and pricing behaviour); implemented more backend Cart logic.
 
 
 ## Contributors
