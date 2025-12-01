@@ -53,6 +53,30 @@ public class CartController {
         return cartRepository.save(cart);
     }
 
+    @PostMapping("/remove/{productId}")
+    public Cart removeFromCart(@PathVariable Long productId,
+                               @RequestParam(defaultValue = "1") int quantity) {
+
+        Cart cart = getCart();
+
+        CartItem existingItem = cart.getItems().stream()
+                .filter(ci -> ci.getProduct().getId().equals(productId))
+                .findFirst().orElse(null);
+
+        if (existingItem != null) {
+            int newQty = existingItem.getQuantity() - quantity;
+
+            if (newQty > 0) {
+                existingItem.setQuantity(newQty);
+            } else {
+                // quantity dropped to 0 → remove item from cart completely
+                cart.getItems().remove(existingItem);
+            }
+        }
+
+        return cartRepository.save(cart);
+    }
+
     @PostMapping("/clear")
     public Cart clearCart() {
         Cart cart = getCart();
