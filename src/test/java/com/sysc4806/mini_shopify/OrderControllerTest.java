@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Optional;
@@ -28,7 +29,9 @@ class OrderControllerTest {
         order.setId(1L);
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         mockMvc = MockMvcBuilders.standaloneSetup(orderController).build();
-        mockMvc.perform(post("/orders").contentType("application/json").content(objectMapper.writeValueAsString(order))).andExpect(status().isOk())
+        mockMvc.perform(post("/orders").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(order)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.shippingAddress").value("462 Wilson Farm Rd"))
                 .andExpect(jsonPath("$.shippingMethod").value("Express"))
                 .andExpect(jsonPath("$.billingAddress").value("2165 Carling Ave"))
@@ -44,7 +47,9 @@ class OrderControllerTest {
         order.setId(1L);
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         mockMvc = MockMvcBuilders.standaloneSetup(orderController).build();
-        mockMvc.perform(get("/orders/1")).andExpect(status().isOk())
+        mockMvc.perform(get("/orders/1/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.shippingAddress").value("462 Wilson Farm Rd"))
                 .andExpect(jsonPath("$.shippingMethod").value("Express"))
                 .andExpect(jsonPath("$.billingAddress").value("2165 Carling Ave"))

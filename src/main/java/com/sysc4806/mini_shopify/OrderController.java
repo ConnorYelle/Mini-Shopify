@@ -15,11 +15,13 @@ public class OrderController {
     private OrderRepository orderRepository;
 
     @GetMapping
+    @ResponseBody
     public Iterable<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
     @PostMapping
+    @ResponseBody
     public Order createOrder(@RequestBody Order order) {
         return orderRepository.save(order);
     }

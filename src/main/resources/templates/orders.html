@@ -63,6 +63,7 @@
 
             if (!response.ok) {
                 orderCard.innerHTML = "<p>Order not found</p>";
+                thankYou.style.display = "none";
                 return;
             }
 
