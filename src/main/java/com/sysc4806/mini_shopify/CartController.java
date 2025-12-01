@@ -5,6 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/cart")
 public class CartController {
@@ -14,6 +18,9 @@ public class CartController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     private static final Long DEMO_CART_ID = 1L;
 
@@ -55,6 +62,9 @@ public class CartController {
 
     public static class PurchaseRequest {
         private String email;
+        private String shippingAddress;
+        private String shippingMethod;
+        private String billingAddress;
         private String paymentMethod;
 
         public String getEmail() {
@@ -63,10 +73,19 @@ public class CartController {
         public String getPaymentMethod() {
             return paymentMethod;
         }
+        public String getShippingAddress() {
+            return shippingAddress;
+        }
+        public String getShippingMethod() {
+            return shippingMethod;
+        }
+        public String getBillingAddress() {
+            return billingAddress;
+        }
     }
 
     @PostMapping("/purchase")
-    public ResponseEntity<String> purchase(@RequestBody PurchaseRequest req) {
+    public ResponseEntity<?> purchase(@RequestBody PurchaseRequest req) {
         Cart cart = getCart();
 
         if (cart.getItems().isEmpty()) {
@@ -88,10 +107,26 @@ public class CartController {
             productRepository.save(p);
         }
 
+         Order order = new Order();
+        order.setShippingAddress(req.getShippingAddress());
+        order.setShippingMethod(req.getShippingMethod());
+        order.setBillingAddress(req.getBillingAddress());
+        order.setPaymentMethod(req.getPaymentMethod());
+        order.setEmail(req.getEmail());
+
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (CartItem ci : cart.getItems()) {
+            OrderItem oi = new OrderItem(ci.getProduct(), ci.getQuantity(), order);
+            orderItems.add(oi);
+        }
+        order.setItems(orderItems);
+
+        orderRepository.save(order);
+
         cart.clearCart();
         cartRepository.save(cart);
 
-        return ResponseEntity.ok("Purchase successful");
+        return ResponseEntity.ok(Map.of("orderId", order.getId()));
     }
 
     @GetMapping("/checkout")
