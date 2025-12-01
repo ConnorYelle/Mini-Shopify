@@ -47,6 +47,9 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 ### Owen Milestone 3 Contributions
 
 ### Jonas Milestone 3 Contributions
+- Implemented the invoice generator for an order.
+- Updated tests in Order and OrderController to reflect the changes.
+- Connected my invoice genereator to the checkout.
 
 ### Connor Milestone 3 Contributions
 - Implemented the customer and merchant homepages
