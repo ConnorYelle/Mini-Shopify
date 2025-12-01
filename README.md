@@ -43,6 +43,9 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 
 ## Milestone 3 Contributions
 ### Tommy Milestone 3 Contribution
+- added remove product button, so store managers can manage products better Delete 
+- added Item cart repository to check if item in cart exist so you cant just delete a product if its in someones cart Delete 
+- added quantity button to store page so customers can select how much they want to add to their cart Added Button for selecting Quantity of products 
 
 ### Owen Milestone 3 Contributions
 - Implemented the purchase checkout page
