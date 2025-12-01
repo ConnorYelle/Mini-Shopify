@@ -75,6 +75,36 @@
         .delete-btn:hover {
             background-color: #ff5555;
         }
+        .edit-btn {
+            background-color: #3b82f6;
+            margin-top: 10px;
+            margin-right: 8px;
+        }
+        .edit-btn:hover {
+            background-color: #60a5fa;
+        }
+        .actions {
+            margin-top: 8px;
+        }
+        .edit-form input {
+            width: calc(50% - 6px);
+            display: inline-block;
+            margin-right: 8px;
+            background-color: #282828;
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+        .edit-form .save-btn {
+            background-color: #1DB954;
+            margin-top: 8px;
+            margin-right: 8px;
+        }
+        .edit-form .cancel-btn {
+            background-color: #777;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -115,18 +145,30 @@
 <h3>${product.name}</h3>
 <p>${product.description}</p>
 <img src="${product.image}" alt="${product.name}" />
-<p><strong>Inventory:</strong> ${product.inventoryNumber}</p>
-<p><strong>Price:</strong> ${product.price}</p>
-<button class="delete-btn" data-id="${product.id}">Delete</button>
+<p><strong>Inventory:</strong> <span class="inv-value" data-id="${product.id}">${product.inventoryNumber}</span></p>
+<p><strong>Price:</strong> $<span class="price-value" data-id="${product.id}">${product.price}</span></p>
+<div class="actions">
+    <button class="edit-btn" data-id="${product.id}">Edit</button>
+    <button class="delete-btn" data-id="${product.id}">Delete</button>
+</div>
+<div class="edit-form" id="edit-${product.id}" style="display:none;">
+    <input type="number" class="edit-inv" data-id="${product.id}" value="${product.inventoryNumber}" min="0" />
+    <input type="number" step="0.01" class="edit-price" data-id="${product.id}" value="${product.price}" min="0" />
+    <button class="save-btn" data-id="${product.id}">Save</button>
+    <button class="cancel-btn" data-id="${product.id}">Cancel</button>
+</div>
                     `;
                     productsList.appendChild(productDiv);
                 });
-            } catch (err) {}
+            } catch (err) {
+                console.error(err);
+            }
         }
 
         loadProducts();
 
         productsList.addEventListener('click', async (e) => {
+            // Delete product
             if (e.target.classList.contains('delete-btn')) {
                 const productId = e.target.dataset.id;
                 const response = await fetch(`/products/${storeId}/${productId}/delete`, {
@@ -135,6 +177,60 @@
                 const message = await response.text();
                 alert(message);
                 if (response.ok) loadProducts();
+                return;
+            }
+
+            // Show edit form
+            if (e.target.classList.contains('edit-btn')) {
+                const productId = e.target.dataset.id;
+                const editForm = document.getElementById(`edit-${productId}`);
+                if (editForm) editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+                return;
+            }
+
+            // Cancel edit
+            if (e.target.classList.contains('cancel-btn')) {
+                const productId = e.target.dataset.id;
+                const editForm = document.getElementById(`edit-${productId}`);
+                if (editForm) editForm.style.display = 'none';
+                return;
+            }
+
+            // Save edited values
+            if (e.target.classList.contains('save-btn')) {
+                const productId = e.target.dataset.id;
+                const invInput = document.querySelector(`.edit-inv[data-id="${productId}"]`);
+                const priceInput = document.querySelector(`.edit-price[data-id="${productId}"]`);
+                const newInv = parseInt(invInput.value, 10);
+                const newPrice = parseFloat(priceInput.value);
+
+                try {
+                    const res = await fetch(`/products/${storeId}/${productId}/update`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ inventoryNumber: newInv, price: newPrice })
+                    });
+
+                    if (res.ok) {
+                        // update UI
+                        const invSpan = document.querySelector(`.inv-value[data-id="${productId}"]`);
+                        const priceSpan = document.querySelector(`.price-value[data-id="${productId}"]`);
+                        if (invSpan) invSpan.textContent = newInv;
+                        if (priceSpan) priceSpan.textContent = newPrice;
+                        const editForm = document.getElementById(`edit-${productId}`);
+                        if (editForm) editForm.style.display = 'none';
+                        messageDiv.style.color = '#1DB954';
+                        messageDiv.textContent = 'Product updated successfully.';
+                    } else {
+                        const errText = await res.text();
+                        messageDiv.style.color = '#FF4C4C';
+                        messageDiv.textContent = `Update failed: ${errText}`;
+                    }
+                } catch (err) {
+                    messageDiv.style.color = '#FF4C4C';
+                    messageDiv.textContent = `Error: ${err.message}`;
+                }
+                return;
             }
         });
 
@@ -164,9 +260,18 @@
 <h3>${savedProduct.name}</h3>
 <p>${savedProduct.description}</p>
 <img src="${savedProduct.image}" alt="${savedProduct.name}" />
-<p><strong>Inventory:</strong> ${savedProduct.inventoryNumber}</p>
-<p><strong>Price:</strong> ${savedProduct.price}</p>
-<button class="delete-btn" data-id="${savedProduct.id}">Delete</button>
+<p><strong>Inventory:</strong> <span class="inv-value" data-id="${savedProduct.id}">${savedProduct.inventoryNumber}</span></p>
+<p><strong>Price:</strong> $<span class="price-value" data-id="${savedProduct.id}">${savedProduct.price}</span></p>
+<div class="actions">
+    <button class="edit-btn" data-id="${savedProduct.id}">Edit</button>
+    <button class="delete-btn" data-id="${savedProduct.id}">Delete</button>
+</div>
+<div class="edit-form" id="edit-${savedProduct.id}" style="display:none;">
+    <input type="number" class="edit-inv" data-id="${savedProduct.id}" value="${savedProduct.inventoryNumber}" min="0" />
+    <input type="number" step="0.01" class="edit-price" data-id="${savedProduct.id}" value="${savedProduct.price}" min="0" />
+    <button class="save-btn" data-id="${savedProduct.id}">Save</button>
+    <button class="cancel-btn" data-id="${savedProduct.id}">Cancel</button>
+</div>
                     `;
                     productsList.prepend(productDiv);
                 } else {

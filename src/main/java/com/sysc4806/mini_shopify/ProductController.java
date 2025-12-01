@@ -101,4 +101,46 @@ public class ProductController {
         productRepository.delete(product);
         return ResponseEntity.ok("Product deleted.");
     }
+
+    @PutMapping("/{storeId}/{productId}/update")
+    public ResponseEntity<?> updateProduct(@PathVariable Long storeId,
+                                           @PathVariable Long productId,
+                                           @RequestBody java.util.Map<String, Object> body) {
+        try {
+            Product product = productRepository.findById(productId).orElse(null);
+            if (product == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+            }
+            if (!product.getStore().getId().equals(storeId)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product does not belong to the given store");
+            }
+
+            if (body.containsKey("inventoryNumber")) {
+                Object invObj = body.get("inventoryNumber");
+                if (invObj instanceof Number) {
+                    product.setInventoryNumber(((Number) invObj).intValue());
+                } else {
+                    try {
+                        product.setInventoryNumber(Integer.parseInt(invObj.toString()));
+                    } catch (Exception ignored) {}
+                }
+            }
+            if (body.containsKey("price")) {
+                Object pObj = body.get("price");
+                if (pObj instanceof Number) {
+                    product.setPrice(((Number) pObj).doubleValue());
+                } else {
+                    try {
+                        product.setPrice(Double.parseDouble(pObj.toString()));
+                    } catch (Exception ignored) {}
+                }
+            }
+
+            Product saved = productRepository.save(product);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }
