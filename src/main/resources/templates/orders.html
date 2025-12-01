@@ -2,9 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Order Details</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #121212;
+            color: #FFFFFF;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 80px;
+        }
+        ul { padding-left: 20px; }
+    </style>
 </head>
+
 <body>
+
+<h1 id="thankYouMessage" style="color:#1DB954; display:block;">
+    Thank you for your order!
+</h1>
+
+<div id="orderCard" style="
+    width:40%;
+    background-color:#282828;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.4);
+    margin-top:25px;
+    line-height:1.6;
+"></div>
+
+<script>
+    const orderCard = document.getElementById("orderCard");
+    const thankYou = document.getElementById("thankYouMessage");
+
+    function displayOrder(order) {
+        const productsList = order.items?.length
+            ? `<ul>${order.items.map(item => `<li>${item.product.name} x${item.quantity}</li>`).join('')}</ul>`
+            : "<p>No products</p>";
+
+        orderCard.innerHTML = `
+            <h2 style="margin-top:0;color:#1DB954;">Order #${order.id}</h2>
+            <p><strong>Shipping Address:</strong> ${order.shippingAddress}</p>
+            <p><strong>Shipping Method:</strong> ${order.shippingMethod}</p>
+            <p><strong>Billing Address:</strong> ${order.billingAddress}</p>
+            <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+            <p><strong>Products:</strong></p>
+            ${productsList}
+        `;
+    }
+
+    const orderId = [[${orderId}]];
+
+    async function loadOrder() {
+        try {
+            const response = await fetch(`/orders/${orderId}/json`);
+
+            if (!response.ok) {
+                orderCard.innerHTML = "<p>Order not found</p>";
+                return;
+            }
+
+            const order = await response.json();
+
+            if (!order || !order.id) {
+                orderCard.innerHTML = "<p>Order not found</p>";
+                thankYou.style.display = "none";
+                return;
+            }
+
+            displayOrder(order);
+
+        } catch (err) {
+            console.error(err);
+            orderCard.innerHTML = "<p>Error loading order</p>";
+            thankYou.style.display = "none";
+        }
+    }
+
+    window.addEventListener("DOMContentLoaded", loadOrder);
+</script>
 
 </body>
 </html>

@@ -1,8 +1,7 @@
 package com.sysc4806.mini_shopify;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -14,6 +13,9 @@ public class Order {
     private String shippingMethod;
     private String billingAddress;
     private String paymentMethod;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<CartItem> items = new ArrayList<>();
 
     public Order() {}
 
@@ -54,4 +56,6 @@ public class Order {
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
+    public List<CartItem> getItems() { return items; }
+    public void setItems(List<CartItem> items) { this.items = items; }
 }
