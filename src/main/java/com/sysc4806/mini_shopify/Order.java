@@ -1,4 +1,5 @@
 package com.sysc4806.mini_shopify;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,9 @@ public class Order {
     private String paymentMethod;
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<CartItem> items = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<OrderItem> items = new ArrayList<>();
 
     public Order() {}
 
@@ -64,6 +66,6 @@ public class Order {
     public void setEmail(String email) {
         this.email = email;
     }
-    public List<CartItem> getItems() { return items; }
-    public void setItems(List<CartItem> items) { this.items = items; }
+    public List<OrderItem> getItems() { return items; }
+    public void setItems(List<OrderItem> items) { this.items = items; }
 }
