@@ -69,18 +69,56 @@ class Order {
     + getPaymentMethod(): String
 }
 
+class Cart {
+    - Long id
+    - Customer customer
+    - List<CartItem> items
+    - double totalPrice
+    --
+    + getId(): Long
+    + getCustomer(): Customer
+    + getItems(): List<CartItem>
+    + getTotalPrice(): double
+    + addItem(CartItem)
+    + removeItem(CartItem)
+    + clearCart()
+    + calculateTotal()
+}
+
+class CartItem {
+    - Long id
+    - Cart cart
+    - Product product
+    - int quantity
+    - double price
+    --
+    + getId(): Long
+    + getCart(): Cart
+    + getProduct(): Product
+    + getQuantity(): int
+    + getPrice(): double
+    + setQuantity(int)
+}
+
 Store "1" --> "many" Product : owns
 Product "many" --> "1" Store : belongs to
+Customer "1" --> "1" Cart : has
+Cart "1" --> "many" CartItem : contains
+CartItem "many" --> "1" Product : references
 
 interface StoreRepository
 interface productRepository
 interface CustomerRepository
 interface OrderRepository
+interface CartRepository
+interface CartItemRepository
 
 StoreRepository --> Store
 productRepository --> Product
 CustomerRepository --> Customer
 OrderRepository --> Order
+CartRepository --> Cart
+CartItemRepository --> CartItem
 
 class storeController {
     + createStore(Store)
@@ -110,12 +148,23 @@ class OrderController {
     + createOrder(Order)
     + getOrder(Long)
 }
+class CartController {
+    + getCart(Long)
+    + addToCart(Long, Long, int)
+    + removeFromCart(Long, Long)
+    + updateCartItem(Long, Long, int)
+    + clearCart(Long)
+    + checkout(Long)
+}
 
 storeController --> StoreRepository
 homePageController --> StoreRepository
 ProductController --> productRepository
 CustomerController --> CustomerRepository
 OrderController --> OrderRepository
+CartController --> CartRepository
+CartController --> CartItemRepository
+CartController --> productRepository
 
 class MiniShopifyApplication {
     + main(String[])
@@ -126,5 +175,6 @@ MiniShopifyApplication --> homePageController
 MiniShopifyApplication --> ProductController
 MiniShopifyApplication --> CustomerController
 MiniShopifyApplication --> OrderController
+MiniShopifyApplication --> CartController
 
 @enduml
