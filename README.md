@@ -41,33 +41,20 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 - Alpha Release - November 17, 2025
 - Final demo - December 1, 2025
 
-## Milestone 2 Contributions
-### Tommy Milestone 2 Contribution
-- Implemented Home Page, allowing adding store
-- Added a Owner dashboard allowing the owner to edit their store, such as changing the name of the store, description
-- Added Owner dashboard tests
-- changed in-memory H2 database to persistent so store don't disappear when restarting SpringBoot
-- added search button
-- Fix bugs in dashboard and products
-### Owen Milestone 2 Contributions
-- Implemented Product page, allowing adding of products, viewing of products
-- Fixed bugs to allow products to persist to each store
-- Fixed bug with database to allow for id generation
-- Fixed tests for Product Controller
-- Added methods to Product Controller
-### Jonas Milestone 2 Contributions
-- Implemented Store page which shows the store and its products
-- Made the DB schema
-- Added a test for SupaBase
-### Connor Milestone 2 Contributions
-- Implemented the store search feature
-- Added tests for the store search feature
-- Added a branch for the Supabase implementation (video presentation)
-### Umniyah's Milestone 2 Contribution
-- Designed and updated the PlantUML class diagram to represent entities and their relationships
-- Implemented a Cart feature with REST endpoints: Cart, CartItem, CartRepository, and CartController. Users can retrieve, add, and clear items in a cart
-- Ensured proper JPA mapping between Cart and CartItem with bidirectional relationships for database persistence
-- Integrated the Cart functionality with existing Product entities
+## Milestone 3 Contributions
+### Tommy Milestone 3 Contribution
+
+### Owen Milestone 3 Contributions
+
+### Jonas Milestone 3 Contributions
+
+### Connor Milestone 3 Contributions
+- Implemented the customer and merchant homepages
+- Linked buttons from the homepages to each different functionality of our website
+- Added tests for both homepages
+
+### Umniyah's Milestone 3 Contribution
+
 
 ## Contributors
 - [Connor Yelle 101260641](https://github.com/ConnorYelle)
