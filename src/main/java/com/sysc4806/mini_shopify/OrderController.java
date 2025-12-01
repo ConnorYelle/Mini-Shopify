@@ -2,31 +2,41 @@ package com.sysc4806.mini_shopify;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/orders")
 public class OrderController {
     @Autowired
     private OrderRepository orderRepository;
 
     @GetMapping
+    @ResponseBody
     public Iterable<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
     @PostMapping
+    @ResponseBody
     public Order createOrder(@RequestBody Order order) {
         return orderRepository.save(order);
     }
 
     @GetMapping("/{id}")
-    public Optional<Order> getOrder(@PathVariable Long id) {
-        return orderRepository.findById(id);
+    public String showOrderPage(@PathVariable Long id, Model model) {
+        model.addAttribute("orderId", id);
+        return "orders";
+    }
+
+    @GetMapping("/{id}/json")
+    @ResponseBody
+    public ResponseEntity<Order> getOrderJson(@PathVariable Long id) {
+        return orderRepository.findById(id)
+                .map(order -> ResponseEntity.ok(order))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }
