@@ -45,6 +45,9 @@ This UML diagram illustrates the main entities (Store, Product, Customer, Order)
 ### Tommy Milestone 3 Contribution
 
 ### Owen Milestone 3 Contributions
+- Implemented the purchase checkout page
+- Fixed bug in cart and cart controller
+- Added display of items to store
 
 ### Jonas Milestone 3 Contributions
 - Implemented the invoice generator for an order.
