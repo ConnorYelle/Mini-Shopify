@@ -120,6 +120,12 @@
 
 <h1>Checkout</h1>
 
+<h2>Your Cart</h2>
+<div id="cart-items">Loading cart...</div>
+<button id="clear-cart-btn">Clear Cart</button>
+
+<div class="total" id="total-price">Total: $0.00</div>
+
 <h2>Your Info</h2>
 
 <form id="checkout-form">
@@ -141,12 +147,6 @@
 </form>
 
 <div id="message"></div>
-
-<h2>Your Cart</h2>
-<div id="cart-items">Loading cart...</div>
-<button id="clear-cart-btn">Clear Cart</button>
-
-<div class="total" id="total-price">Total: $0.00</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
@@ -247,8 +247,6 @@
         }
 
         clearCartBtn.addEventListener("click", async () => {
-            await fetch("/cart/clear", { method: 'POST' });
-            await loadCart();
             updateTotal();
         });
 
