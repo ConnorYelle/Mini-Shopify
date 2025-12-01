@@ -1,5 +1,6 @@
 package com.sysc4806.mini_shopify;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,8 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<CartItem> items = new ArrayList<>();
 
     public Cart() {}
@@ -22,6 +24,9 @@ public class Cart {
 
     public List<CartItem> getItems() {
         return items;
+    }
+    public void setItems(List<CartItem> items) {
+        this.items = items;
     }
 
     public void addItem(CartItem item) {

@@ -97,7 +97,7 @@
 
 <script>
     const storeCard = document.getElementById("storeCard");
-    const storeId = [[${storeId}]]; // replace with your Thymeleaf variable or JS variable
+    const storeId = [[${storeId}]]; // replace with Thymeleaf variable or JS variable
 
     let cartCount = 0;
     const cartCountSpan = document.getElementById("cart-count");
@@ -108,37 +108,33 @@
         cartCountSpan.textContent = cartCount;
     }
 
-    function displayStore(store) {
-        storeCard.innerHTML = `
-            <h2 style='margin-top:0;color:#1DB954;'>${store.name}</h2>
-            <p><strong>Owner:</strong> ${store.owner || 'N/A'}</p>
-            <p><strong>Description:</strong> ${store.description || 'N/A'}</p>
-            <p><strong>Category:</strong> ${store.category || 'N/A'}</p>
-            <h3 style="color:#1DB954; margin-top: 20px;">Products</h3>
-            <div id="product-list">Loading products...</div>
-        `;
-    }
-
-    async function loadStore() {
+    async function addToCart(productId, quantity=1) {
         try {
-            const response = await fetch(`/store/${storeId}`);
-            if (!response.ok) {
-                storeCard.innerHTML = "<p>Store not found</p>";
-                return;
-            }
-            const store = await response.json();
-            displayStore(store);
+            const res = await fetch(`/cart/add/${productId}?quantity=${quantity}`, {
+                method: 'POST'
+            });
+            if (!res.ok) throw new Error('Failed to add to cart');
+            updateCart(quantity);
         } catch (err) {
             console.error(err);
-            storeCard.innerHTML = "<p>Error loading store</p>";
+        }
+    }
+
+    async function removeFromCart(productId, quantity=1) {
+        try {
+            const res = await fetch(`/cart/remove/${productId}?quantity=${quantity}`, {
+                method: 'POST'
+            });
+            if (!res.ok) throw new Error('Failed to remove from cart');
+            updateCart(-quantity);
+        } catch (err) {
+            console.error(err);
         }
     }
 
     async function loadProducts() {
         try {
             const response = await fetch(`/products/store/${storeId}`);
-            if (!response.ok) throw new Error("Products not found");
-
             const products = await response.json();
             const list = document.getElementById("product-list");
             list.innerHTML = "";
@@ -167,41 +163,37 @@
             });
 
             document.querySelectorAll('.increase').forEach(btn => {
-                btn.addEventListener('click', e => {
+                btn.addEventListener('click', async e => {
                     const id = e.target.dataset.id;
                     const max = parseInt(e.target.dataset.inventory);
                     const span = document.getElementById(`qty-${id}`);
-                    const current = parseInt(span.textContent);
+                    let current = parseInt(span.textContent);
                     if (current < max) {
+                        await addToCart(id, 1);
                         span.textContent = current + 1;
-                        updateCart(1);
                     }
                 });
             });
 
             document.querySelectorAll('.decrease').forEach(btn => {
-                btn.addEventListener('click', e => {
+                btn.addEventListener('click', async e => {
                     const id = e.target.dataset.id;
                     const span = document.getElementById(`qty-${id}`);
-                    const current = parseInt(span.textContent);
+                    let current = parseInt(span.textContent);
                     if (current > 0) {
+                        await removeFromCart(id, 1);
                         span.textContent = current - 1;
-                        updateCart(-1);
                     }
                 });
             });
 
-        } catch (error) {
-            console.error(error);
-            const list = document.getElementById("product-list");
-            if (list) list.innerHTML = "<p>Error loading products.</p>";
+        } catch (err) {
+            console.error(err);
+            document.getElementById("product-list").innerHTML = "<p>Error loading products.</p>";
         }
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-        loadStore();
-        setTimeout(loadProducts, 200);
-    });
+    window.addEventListener("DOMContentLoaded", loadProducts);
 </script>
 
 </body>

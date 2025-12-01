@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #232323;
+            color: #FFFFFF;
+        }
+
+        h1, h2 {
+            color: #1DB954;
+        }
+
+        form input, form select, form button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: #282828;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        button {
+            background-color: #1DB954;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1ed760;
+        }
+
+        #cart-items {
+            margin-top: 25px;
+        }
+
+        .cart-item {
+            background-color: #1e1e1e;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 20px;
+            border-radius: 8px;
+            align-items: center;
+        }
+
+        .cart-item img {
+            width: 100px;
+            height: auto;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .quantity-controls button {
+            background-color: #1DB954;
+            border: none;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .quantity-controls span {
+            min-width: 30px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .total {
+            margin-top: 25px;
+            font-size: 24px;
+            color: #1DB954;
+            font-weight: bold;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #clear-cart-btn {
+            margin-top: 10px;
+            background-color: #ff5555;
+        }
+
+        #clear-cart-btn:hover {
+            background-color: #ff7777;
+        }
+
+        .warning {
+            color: #ff5555;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Checkout</h1>
+
+<h2>Your Info</h2>
+
+<form id="checkout-form">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="shipping-address" placeholder="Shipping Address" required>
+    <select id="shipping-method" required>
+        <option value="">Select Shipping Method</option>
+        <option value="regular">Regular</option>
+        <option value="express">Express</option>
+    </select>
+    <input type="text" id="billing-address" placeholder="Billing Address" required>
+    <select id="payment-method" required>
+        <option value="">Select Payment Method</option>
+        <option value="credit">Credit Card</option>
+        <option value="debit">Debit Card</option>
+    </select>
+
+    <button type="submit">Complete Purchase</button>
+</form>
+
+<div id="message"></div>
+
+<h2>Your Cart</h2>
+<div id="cart-items">Loading cart...</div>
+<button id="clear-cart-btn">Clear Cart</button>
+
+<div class="total" id="total-price">Total: $0.00</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+
+        const cartDiv = document.getElementById("cart-items");
+        const totalPriceDiv = document.getElementById("total-price");
+        const messageDiv = document.getElementById("message");
+        const clearCartBtn = document.getElementById("clear-cart-btn");
+
+        async function loadCart() {
+            const response = await fetch("/cart");
+            const cart = await response.json();
+
+            cartDiv.innerHTML = "";
+            let total = 0;
+
+            const productsMap = {};
+
+            // Aggregate quantities for same product
+            cart.items.forEach(item => {
+                const id = item.product.id;
+                if (!productsMap[id]) {
+                    productsMap[id] = { ...item.product, quantity: item.quantity };
+                } else {
+                    productsMap[id].quantity += item.quantity;
+                }
+            });
+
+            Object.values(productsMap).forEach(item => {
+                total += item.price * item.quantity;
+
+                const div = document.createElement("div");
+                div.classList.add("cart-item");
+                div.innerHTML = `
+                    <img src="${item.image}" />
+                    <div>
+                        <h3>${item.name}</h3>
+                        <p>${item.description}</p>
+                        <p><strong>Price:</strong> $${item.price}</p>
+                        <div class="quantity-controls">
+                            <button class="decrease" data-id="${item.id}">-</button>
+                            <span id="qty-${item.id}">${item.quantity}</span>
+                            <button class="increase" data-id="${item.id}" data-inventory="${item.inventoryNumber}">+</button>
+                        </div>
+                        <div class="warning" id="warning-${item.id}" style="display:none;">Cannot exceed inventory!</div>
+                    </div>
+                `;
+                cartDiv.appendChild(div);
+            });
+
+            totalPriceDiv.textContent = "Total: $" + total.toFixed(2);
+
+            // Attach events after DOM elements are added
+            document.querySelectorAll(".increase").forEach(btn => {
+                btn.addEventListener("click", async e => {
+                    const id = e.target.dataset.id;
+                    const span = document.getElementById(`qty-${id}`);
+                    const warning = document.getElementById(`warning-${id}`);
+                    const current = parseInt(span.textContent);
+                    const max = parseInt(e.target.dataset.inventory);
+
+                    if (current < max) {
+                        await fetch(`/cart/add/${id}?quantity=1`, { method: 'POST' });
+                        span.textContent = current + 1;
+                        updateTotal();
+                        warning.style.display = "none";
+                    } else {
+                        warning.style.display = "block";
+                    }
+                });
+            });
+
+            document.querySelectorAll(".decrease").forEach(btn => {
+                btn.addEventListener("click", async e => {
+                    const id = e.target.dataset.id;
+                    const span = document.getElementById(`qty-${id}`);
+                    const warning = document.getElementById(`warning-${id}`);
+                    const current = parseInt(span.textContent);
+
+                    if (current > 0) {
+                        await fetch(`/cart/remove/${id}?quantity=1`, { method: 'POST' });
+                        span.textContent = current - 1;
+                        updateTotal();
+                        warning.style.display = "none";
+                    }
+                });
+            });
+        }
+
+        function updateTotal() {
+            let total = 0;
+            document.querySelectorAll(".cart-item").forEach(div => {
+                const price = parseFloat(div.querySelector("p strong").textContent.replace("Price: $",""));
+                const qty = parseInt(div.querySelector(".quantity-controls span").textContent);
+                total += price * qty;
+            });
+            totalPriceDiv.textContent = "Total: $" + total.toFixed(2);
+        }
+
+        clearCartBtn.addEventListener("click", async () => {
+            await fetch("/cart/clear", { method: 'POST' });
+            await loadCart();
+            updateTotal();
+        });
+
+        // Purchase form
+        document.getElementById("checkout-form").addEventListener("submit", async e => {
+            e.preventDefault();
+
+            const purchaseData = {
+                email: document.getElementById("email").value,
+                shippingAddress: document.getElementById("shipping-address").value,
+                shippingMethod: document.getElementById("shipping-method").value,
+                billingAddress: document.getElementById("billing-address").value,
+                paymentMethod: document.getElementById("payment-method").value
+            };
+
+            const res = await fetch("/cart/purchase", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(purchaseData)
+            });
+
+            const msg = await res.text();
+            messageDiv.style.color = res.ok ? "#1DB954" : "#ff5555";
+            messageDiv.textContent = msg;
+
+            if (res.ok) {
+                await loadCart();
+                updateTotal();
+            }
+        });
+
+        await loadCart();
+    });
+</script>
+
+</body>
+</html>
