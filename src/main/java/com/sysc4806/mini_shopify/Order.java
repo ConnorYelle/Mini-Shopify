@@ -1,8 +1,8 @@
 package com.sysc4806.mini_shopify;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -14,14 +14,20 @@ public class Order {
     private String shippingMethod;
     private String billingAddress;
     private String paymentMethod;
+    private String email;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<OrderItem> items = new ArrayList<>();
 
     public Order() {}
 
-    public Order(String shippingAddress, String shippingMethod, String billingAddress, String paymentMethod) {
+    public Order(String shippingAddress, String shippingMethod, String billingAddress, String paymentMethod, String email) {
         this.shippingAddress = shippingAddress;
         this.shippingMethod = shippingMethod;
         this.billingAddress = billingAddress;
         this.paymentMethod = paymentMethod;
+        this.email = email;
     }
 
     public Long getId() {
@@ -54,4 +60,12 @@ public class Order {
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public List<OrderItem> getItems() { return items; }
+    public void setItems(List<OrderItem> items) { this.items = items; }
 }

@@ -252,7 +252,7 @@
             updateTotal();
         });
 
-        // Purchase form
+// Purchase form — redirect to order page
         document.getElementById("checkout-form").addEventListener("submit", async e => {
             e.preventDefault();
 
@@ -270,14 +270,16 @@
                 body: JSON.stringify(purchaseData)
             });
 
-            const msg = await res.text();
-            messageDiv.style.color = res.ok ? "#1DB954" : "#ff5555";
-            messageDiv.textContent = msg;
-
             if (res.ok) {
-                await loadCart();
-                updateTotal();
+                // server must return { "orderId": X }
+                const result = await res.json();
+                window.location.href = `/orders/${result.orderId}`;
+                return;
             }
+
+            const msg = await res.text();
+            messageDiv.style.color = "#ff5555";
+            messageDiv.textContent = msg;
         });
 
         await loadCart();
