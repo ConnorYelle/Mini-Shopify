@@ -24,7 +24,7 @@ class OrderControllerTest {
     @Test
     void testCreateOrder() throws Exception {
         Order order = new Order("462 Wilson Farm Rd", "Express",
-                "2165 Carling Ave", "Credit Card");
+                "2165 Carling Ave", "Credit Card", "test@test.com");
         order.setId(1L);
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         mockMvc = MockMvcBuilders.standaloneSetup(orderController).build();
@@ -32,14 +32,15 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.shippingAddress").value("462 Wilson Farm Rd"))
                 .andExpect(jsonPath("$.shippingMethod").value("Express"))
                 .andExpect(jsonPath("$.billingAddress").value("2165 Carling Ave"))
-                .andExpect(jsonPath("$.paymentMethod").value("Credit Card"));
+                .andExpect(jsonPath("$.paymentMethod").value("Credit Card"))
+                .andExpect(jsonPath("$.email").value("test@test.com"));
         verify(orderRepository, times(1)).save(any(Order.class));
     }
 
     @Test
     void testGetOrder() throws Exception {
         Order order = new Order("462 Wilson Farm Rd", "Express",
-                "2165 Carling Ave", "Credit Card");
+                "2165 Carling Ave", "Credit Card", "carleton@uni.com");
         order.setId(1L);
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         mockMvc = MockMvcBuilders.standaloneSetup(orderController).build();
@@ -47,7 +48,8 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.shippingAddress").value("462 Wilson Farm Rd"))
                 .andExpect(jsonPath("$.shippingMethod").value("Express"))
                 .andExpect(jsonPath("$.billingAddress").value("2165 Carling Ave"))
-                .andExpect(jsonPath("$.paymentMethod").value("Credit Card"));
+                .andExpect(jsonPath("$.paymentMethod").value("Credit Card"))
+                .andExpect(jsonPath("$.email").value("carleton@uni.com"));
         verify(orderRepository, times(1)).findById(1L);
     }
 }

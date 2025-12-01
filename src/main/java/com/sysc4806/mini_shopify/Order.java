@@ -13,17 +13,19 @@ public class Order {
     private String shippingMethod;
     private String billingAddress;
     private String paymentMethod;
+    private String email;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<CartItem> items = new ArrayList<>();
 
     public Order() {}
 
-    public Order(String shippingAddress, String shippingMethod, String billingAddress, String paymentMethod) {
+    public Order(String shippingAddress, String shippingMethod, String billingAddress, String paymentMethod, String email) {
         this.shippingAddress = shippingAddress;
         this.shippingMethod = shippingMethod;
         this.billingAddress = billingAddress;
         this.paymentMethod = paymentMethod;
+        this.email = email;
     }
 
     public Long getId() {
@@ -55,6 +57,12 @@ public class Order {
     }
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
     public List<CartItem> getItems() { return items; }
     public void setItems(List<CartItem> items) { this.items = items; }
